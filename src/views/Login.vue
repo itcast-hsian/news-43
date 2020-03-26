@@ -13,10 +13,10 @@
         <!-- 表单 -->
         <div class="form">
             <div class="form-item">
-                <input placeholder="手机号码">
+                <input placeholder="手机号码" v-model="form.username">
             </div>
             <div class="form-item">
-                <input type="password" placeholder="请输入密码">
+                <input type="password" placeholder="请输入密码" v-model="form.password">
             </div>
             <div class="form-item">
                 <button @click="handleClick">登录</button>
@@ -27,10 +27,32 @@
 
 <script>
 export default {
+    data(){
+        return {
+            // 保存表单数据
+            form: {
+                username: "",
+                password: ""
+            }
+        }
+    },
     methods: {
         // 点击登录按钮的事件
         handleClick(){
-            this.$toast('登录成功');
+            // 调用axios发起异步请求，类似$.ajax(类似不代表一样)
+            this.$axios({
+                // 接口地址
+                url: "http://127.0.0.1:3000/login",
+                // 声明请求的方法为post请求(一定要注册这个method没有s)
+                // 跟vue的methods属性毫无关系
+                method: "POST",
+                // 参数
+                data: this.form
+                // .then方法里面的函数就是成功的回调函数
+            }).then(res => {
+                console.log(res)
+            })
+
         }
     }
 };
