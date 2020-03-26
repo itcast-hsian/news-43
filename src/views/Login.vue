@@ -48,9 +48,12 @@ export default {
                 method: "POST",
                 // 参数
                 data: this.form
-                // .then方法里面的函数就是成功的回调函数
+                // .then方法里面的函数就是成功的回调函数,axios没有succces
             }).then(res => {
-                console.log(res)
+                // 获取到返回的信息
+                const {message} = res.data;
+                // 使用vant的弹窗提示用，success表示成功的弹窗
+                this.$toast.success(message);
             })
 
         }
