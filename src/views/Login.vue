@@ -37,6 +37,11 @@
                 </van-button>
             </div>
         </van-form>
+        <router-link to="/register">
+            <van-button round block class="link-register" >
+                注册
+            </van-button>
+        </router-link>
     </div>
 </template>
 
@@ -115,5 +120,9 @@ export default {
             background-color: #cc3300;
             border: 1px solid #cc3300;
         }
+    }
+
+    .link-register{
+        margin-top: 20 / 360 * 100vw;
     }
 </style>
