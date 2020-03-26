@@ -4,6 +4,11 @@ import Vue from 'vue'
 import App from './App.vue'
 // 路由对象
 import router from './router'
+// 引入vant ui组件库
+import Vant from 'vant';
+
+// 注册vant插件 （vue.use都是用来注册插件）
+Vue.use(Vant);
 
 // 上线环境是否提示信息(忽略)
 Vue.config.productionTip = false
