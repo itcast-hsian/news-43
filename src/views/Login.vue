@@ -1,9 +1,27 @@
 <template>
-    <div>
-        登录页
-        <!-- 要显示阿里图标库的图标，必须要加上iconfont这个类名，第二类名就是你想要显示的那个图标 -->
-        <span class="iconfont iconnew"></span>
-        <span class="iconfont iconweixin"></span>
+    <div class="container">
+        <!-- 返回上一页按钮 -->
+        <div class="back-btn">
+            <span class="iconfont iconicon-test"></span>
+        </div>
+
+        <!-- logo -->
+        <div class="logo">
+            <span class="iconfont iconnew"></span>
+        </div>
+
+        <!-- 表单 -->
+        <div class="form">
+            <div class="form-item">
+                <input placeholder="手机号码">
+            </div>
+            <div class="form-item">
+                <input type="password" placeholder="请输入密码">
+            </div>
+            <div class="form-item">
+                <button>登录</button>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -14,8 +32,5 @@ export default {
 </script>
 
 <style>
-span{
-    font-size: 50px;
-    color: red;
-}
+
 </style>
