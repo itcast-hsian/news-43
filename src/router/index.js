@@ -18,6 +18,11 @@ const routes = [
 		// 注册页
 		path: "/register",
 		component: () => import("@/views/Register")
+	},
+	{
+		// 个人中心页
+		path: "/personal",
+		component: () => import("@/views/Personal")
 	}
 ]
 
