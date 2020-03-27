@@ -2,9 +2,9 @@
     <!-- 列表按钮栏 -->
     <div class="listbar">
         <router-link to="#">
-            <div>我的关注</div>
+            <div>{{label}}</div>
             <div class="tips">
-                关注的用户
+                {{tips}}
                 <span class="iconfont iconjiantou1"></span>
             </div>
         </router-link>
@@ -12,7 +12,10 @@
 </template>
 
 <script>
-export default {};
+export default {
+    // 声明组件可以接收的属性, label表示左边的文字, tips是右边的文字
+    props: ["label", "tips"],
+};
 </script>
 
 <style scoped lang="less">
