@@ -47,6 +47,25 @@ export default {
 	// 注册组件,导入的子组件都必须注册才可以再模板渲染
 	components: {
 		Listbar
+	},
+	// 组件加载完毕后触发，类似window.onload
+	mounted(){
+		// 从本地获取token和id
+		const jsonStr = localStorage.getItem("userInfo");
+		// 把字符串转成对象,userJson就是用户的信息对象
+		// userJson.token和userJson.user.id 这两个值是接口需要的
+		const userJson = JSON.parse(jsonStr);
+
+		// 发起异步的请求
+		this.$axios({
+			url: "/user/" +   userJson.user.id,
+			// 添加头信息
+			headers: {
+				Authorization: userJson.token
+			}
+		}).then(res => {
+			console.log(res)
+		})
 	}
 };
 </script>
