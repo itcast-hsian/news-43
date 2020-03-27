@@ -1,0 +1,42 @@
+<template>
+    <!-- 列表按钮栏 -->
+    <div class="listbar">
+        <router-link to="#">
+            <div>我的关注</div>
+            <div class="tips">
+                关注的用户
+                <span class="iconfont iconjiantou1"></span>
+            </div>
+        </router-link>
+    </div>
+</template>
+
+<script>
+export default {};
+</script>
+
+<style scoped lang="less">
+/**
+	列表按钮栏的样式
+*/
+.listbar{
+	padding-left: 20 / 360 *100vw;
+	height: 48 / 360 *100vw;
+	line-height: 48 / 360 *100vw;
+
+	a{
+		display: flex;
+		justify-content: space-between;
+		border-bottom: 1px #eee solid;
+		align-items: center;
+		padding-right: 20 / 360 *100vw;
+	}
+
+	.tips{
+		color: #999;
+		span{
+			margin-left: 5px;
+		}
+	}
+}
+</style>

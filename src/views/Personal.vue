@@ -18,21 +18,28 @@
 			<span class="arrow iconfont iconjiantou1"></span>
 		</div>
 
-		<!-- 列表按钮栏 -->
-		<div class="listbar">
-			<router-link to="#">
-				<div>我的关注</div>
-				<div class="tips">
-					关注的用户
-					<span class="iconfont iconjiantou1"></span>
-				</div>
-			</router-link>
-		</div>
+		<!-- 组件的调用，单双标签都可以 -->
+		<Listbar/>
+
+		<Listbar/>
+
+		<Listbar/>
+
+		<Listbar/>
 	</div>
 </template>
 
 <script>
-export default {};
+// 导入列表按钮栏的组件，import后面接上的组件变量名（变量就意味着可以随便改名字）
+// @代表src目录
+import Listbar from "@/components/Listbar"
+
+export default {
+	// 注册组件,导入的子组件都必须注册才可以再模板渲染
+	components: {
+		Listbar
+	}
+};
 </script>
 
 <style scoped lang="less">
@@ -59,30 +66,6 @@ export default {};
 		line-height: 1.5;
 		p{
 			color: #999;
-		}
-	}
-}
-
-/**
-	列表按钮栏的样式
-*/
-.listbar{
-	padding-left: 20 / 360 *100vw;
-	height: 48 / 360 *100vw;
-	line-height: 48 / 360 *100vw;
-
-	a{
-		display: flex;
-		justify-content: space-between;
-		border-bottom: 1px #eee solid;
-		align-items: center;
-		padding-right: 20 / 360 *100vw;
-	}
-
-	.tips{
-		color: #999;
-		span{
-			margin-left: 5px;
 		}
 	}
 }
