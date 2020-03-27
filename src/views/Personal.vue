@@ -17,6 +17,17 @@
 			<!-- 右侧的箭头图标 -->
 			<span class="arrow iconfont iconjiantou1"></span>
 		</div>
+
+		<!-- 列表按钮栏 -->
+		<div class="listbar">
+			<router-link to="#">
+				<div>我的关注</div>
+				<div class="tips">
+					关注的用户
+					<span class="iconfont iconjiantou1"></span>
+				</div>
+			</router-link>
+		</div>
 	</div>
 </template>
 
@@ -38,7 +49,7 @@ export default {};
 			width:70 / 360 * 100vw;
 			height: 70 / 360 * 100vw;
 			border-radius: 50%;
-			object-fit: contain;
+			object-fit: cover;
 		}
 	}
 
@@ -48,6 +59,30 @@ export default {};
 		line-height: 1.5;
 		p{
 			color: #999;
+		}
+	}
+}
+
+/**
+	列表按钮栏的样式
+*/
+.listbar{
+	padding-left: 20 / 360 *100vw;
+	height: 48 / 360 *100vw;
+	line-height: 48 / 360 *100vw;
+
+	a{
+		display: flex;
+		justify-content: space-between;
+		border-bottom: 1px #eee solid;
+		align-items: center;
+		padding-right: 20 / 360 *100vw;
+	}
+
+	.tips{
+		color: #999;
+		span{
+			margin-left: 5px;
 		}
 	}
 }
