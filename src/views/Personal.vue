@@ -4,15 +4,22 @@
 		<div class="header">
 			<!-- 头像 -->
 			<div class="avatar">
-				<img src="https://www.baidu.com/img/bd_logo1.png" alt="">
+				<!-- $axios.defaults.baseURL 就是后台的基准路径 -->
+				<img :src="$axios.defaults.baseURL + userInfo.head_img">
 			</div>
 			<!-- 姓名 -->
 			<div class="profile">
 				<div>
-					<span class="iconfont iconxingbienan"></span>
-					火星网友
+					<!-- 性别男的图标 -->
+					<span class="iconfont iconxingbienan" 
+					v-if="userInfo.gender === 1"></span>
+					<!-- 性别女的图标 -->
+					<span class="iconfont iconxingbienv" 
+					v-if="userInfo.gender === 0"></span>
+
+					{{userInfo.nickname}}
 				</div>
-				<p>2020-03-27</p>
+				<p>{{ moment(userInfo.create_date).format('YYYY-MM-DD') }}</p>
 			</div>
 			<!-- 右侧的箭头图标 -->
 			<span class="arrow iconfont iconjiantou1"></span>
@@ -30,7 +37,9 @@
 <script>
 // 导入列表按钮栏的组件，import后面接上的组件变量名（变量就意味着可以随便改名字）
 // @代表src目录
-import Listbar from "@/components/Listbar"
+import Listbar from "@/components/Listbar";
+// 引入第三方的日期格式处理的工具库
+import moment from "moment";
 
 export default {
 	data(){
@@ -41,7 +50,11 @@ export default {
 				{ label: "我的跟帖", tips: "跟帖回复" },
 				{ label: "我的收藏", tips: "文章视频" },
 				{ label: "设置", tips: "" },
-			]
+			],
+			// 个人的详细信息,初始值给一个对象
+			userInfo: {},
+			// moment是日期处理的工具库，为了在模板中可以使用，所以需要绑定在data中
+			moment,
 		}
 	},
 	// 注册组件,导入的子组件都必须注册才可以再模板渲染
@@ -64,7 +77,10 @@ export default {
 				Authorization: userJson.token
 			}
 		}).then(res => {
-			console.log(res)
+			// 解构出用户的数据
+			const {data} = res.data;
+			// 赋值给data的userInfo
+			this.userInfo = data;
 		})
 	}
 };
@@ -94,6 +110,14 @@ export default {
 		line-height: 1.5;
 		p{
 			color: #999;
+		}
+
+		.iconxingbienan{
+			color: blue;
+		}
+
+		.iconxingbienv{
+			color: palevioletred;
 		}
 	}
 }
