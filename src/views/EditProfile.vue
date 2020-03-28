@@ -6,6 +6,9 @@
         <!-- 头像 -->
         <div class="avatar">
             <img :src="$axios.defaults.baseURL + userInfo.head_img"/>
+
+            <!-- 添加上传的组件 -->
+            <van-uploader class="uploader" :after-read="afterRead" />
         </div>
 
         <!-- 按钮列表 -->
@@ -47,6 +50,12 @@ export default {
             // 保存到data
             this.userInfo = data;
         })
+    },
+    methods: {
+        // 图片上传的方法
+        afterRead(file){
+            console.log(file)
+        }
     }
 };
 </script>
@@ -57,11 +66,21 @@ export default {
     padding: 20 / 360 * 100vw;
     justify-content: center;
     align-items: center;
+    position: relative;
 
     img{
         width:100 / 360 * 100vw;
         height:100 / 360 * 100vw;
         border-radius: 50%;
+    }
+
+    .uploader{
+        position: absolute;
+        width:100 / 360 * 100vw;
+        height:100 / 360 * 100vw;
+        left: 50%;
+        top: 50%;
+        transform: translateX(-50 / 360 * 100vw) translateY(-50 / 360 * 100vw);
     }
 }
 </style>
