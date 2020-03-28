@@ -1,13 +1,7 @@
 <template>
     <div class="container">
-		<!-- 顶部的导航条 -->
-		<div class="navigate-bar">
-			<!-- $router.back()是实例下的属性，可以直接在模板中渲染 -->
-			<span class="iconfont iconjiantou2" @click="$router.back()"></span>
-			<strong>个人中心</strong>
-			<!-- $router.push()是实例下的属性，可以直接在模板中渲染 -->
-			<span class="iconfont iconshouye" @click="$router.push('/')"></span>
-		</div>
+		<!-- 引入自定义的头部导航组件 -->
+		<NavigateBar/>
 
 		<!-- 头部 -->
 		<router-link to="/edit-profile">
@@ -54,8 +48,11 @@
 // 导入列表按钮栏的组件，import后面接上的组件变量名（变量就意味着可以随便改名字）
 // @代表src目录
 import Listbar from "@/components/Listbar";
+// 引入头部导航组件
+import NavigateBar from "@/components/NavigateBar"
 // 引入第三方的日期格式处理的工具库
 import moment from "moment";
+
 
 export default {
 	data(){
@@ -74,7 +71,8 @@ export default {
 	},
 	// 注册组件,导入的子组件都必须注册才可以再模板渲染
 	components: {
-		Listbar
+		Listbar,
+		NavigateBar
 	},
 	// 组件加载完毕后触发，类似window.onload
 	mounted(){
@@ -121,18 +119,6 @@ export default {
 </script>
 
 <style scoped lang="less">
-.navigate-bar{
-	line-height: 48 / 360 * 100vw;
-	display: flex;
-	justify-content: space-between;
-	align-items:center;
-	padding: 0 20 / 360 * 100vw;
-	border-bottom:1px #eee solid;
-
-	.iconshouye{
-		font-size: 20px;
-	}
-}
 
 .header{
 	padding: 20 / 360 * 100vw;

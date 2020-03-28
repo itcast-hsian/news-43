@@ -1,9 +1,19 @@
 <template>
-    <div>编辑页</div>
+    <div>
+        <!-- 头部导航组件 -->
+        <NavigateBar/>
+    </div>
 </template>
 
 <script>
-export default {};
+// 头部导航组件
+import NavigateBar from "@/components/NavigateBar"
+
+export default {
+    components: {
+        NavigateBar
+    }
+};
 </script>
 
 <style>
