@@ -12,7 +12,17 @@
         </div>
 
         <!-- 按钮列表 -->
-        <Listbar label="昵称" :tips="userInfo.nickname"/>
+        <!-- show = true相当于this.show = true -->
+        <Listbar label="昵称" :tips="userInfo.nickname" @click.native="show = true"/>
+
+        <!-- 编辑昵称的弹窗 -->
+        <!-- v-model: value和input/change两种数据的集合，
+        这里的v-model作用只要控制弹窗的显示和隐藏-->
+        <van-dialog v-model="show" title="标题" show-cancel-button>
+            <van-field v-model="value" placeholder="请输入用户名" />
+        </van-dialog>
+
+
         <Listbar label="密码" tips="******"/>
         <Listbar label="性别" :tips="['女', '男'][userInfo.gender]"/>
     </div>
@@ -30,7 +40,9 @@ export default {
             // 用户详情
             userInfo: {},
             // 本地的用户数据
-            userJson: {}
+            userJson: {},
+            // 是否显示编辑昵称的弹窗
+            show: false
         }
     },
     components: {
