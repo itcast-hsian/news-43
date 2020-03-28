@@ -1,7 +1,7 @@
 <template>
     <div class="container">
-		<!-- 引入自定义的头部导航组件 -->
-		<NavigateBar/>
+		<!-- 引入自定义的头部导航组件,  showHome显示首页图标的 -->
+		<NavigateBar title="个人中心" :showHome="true"/>
 
 		<!-- 头部 -->
 		<router-link to="/edit-profile">
