@@ -17,9 +17,14 @@
 
         <!-- 编辑昵称的弹窗 -->
         <!-- v-model: value和input/change两种数据的集合，
-        这里的v-model作用只要控制弹窗的显示和隐藏-->
-        <van-dialog v-model="show" title="标题" show-cancel-button>
-            <van-field v-model="value" placeholder="请输入用户名" />
+            这里的v-model作用只要控制弹窗的显示和隐藏
+            @confirm点击确定按钮时候的事件
+        -->
+        <van-dialog v-model="show" 
+        title="修改昵称" 
+        show-cancel-button 
+        @confirm="handleChangeNickname">
+            <van-field v-model="nickname" placeholder="请输入用户名" />
         </van-dialog>
 
 
@@ -42,7 +47,10 @@ export default {
             // 本地的用户数据
             userJson: {},
             // 是否显示编辑昵称的弹窗
-            show: false
+            show: false,
+
+            // 单独记录昵称
+            nickname: ""
         }
     },
     components: {
@@ -67,6 +75,9 @@ export default {
             const {data} = res.data;
             // 保存到data
             this.userInfo = data;
+
+            // 单独保存nickname给编辑的弹窗使用
+            this.nickname = data.nickname;
         })
     },
     methods: {
@@ -102,7 +113,7 @@ export default {
             })
         },
 
-        // 编辑用户信息的函数
+        // 编辑用户信息的函数,可以修改头像，昵称。。。
         // data就是请求的参数
         handleEdit(data){
             this.$axios({
@@ -115,8 +126,16 @@ export default {
                 data,
             }).then(res => {
                 // console.log(res)
-                this.$toast.success("头像修改成功")
+                this.$toast.success("修改成功")
             })
+        },
+
+        // 修改昵称的事件
+        handleChangeNickname(){
+            // 调用编辑用户信息的函数
+            this.handleEdit({ nickname: this.nickname });
+            // 同步的修改当前显示的数据
+            this.userInfo.nickname = this.nickname;
         }
     }
 };
