@@ -10,29 +10,31 @@
 		</div>
 
 		<!-- 头部 -->
-		<div class="header">
-			<!-- 头像 -->
-			<div class="avatar">
-				<!-- $axios.defaults.baseURL 就是后台的基准路径 -->
-				<img :src="$axios.defaults.baseURL + userInfo.head_img">
-			</div>
-			<!-- 姓名 -->
-			<div class="profile">
-				<div>
-					<!-- 性别男的图标 -->
-					<span class="iconfont iconxingbienan" 
-					v-if="userInfo.gender === 1"></span>
-					<!-- 性别女的图标 -->
-					<span class="iconfont iconxingbienv" 
-					v-if="userInfo.gender === 0"></span>
-
-					{{userInfo.nickname}}
+		<router-link to="/edit-profile">
+			<div class="header">
+				<!-- 头像 -->
+				<div class="avatar">
+					<!-- $axios.defaults.baseURL 就是后台的基准路径 -->
+					<img :src="$axios.defaults.baseURL + userInfo.head_img">
 				</div>
-				<p>{{ moment(userInfo.create_date).format('YYYY-MM-DD') }}</p>
+				<!-- 姓名 -->
+				<div class="profile">
+					<div>
+						<!-- 性别男的图标 -->
+						<span class="iconfont iconxingbienan" 
+						v-if="userInfo.gender === 1"></span>
+						<!-- 性别女的图标 -->
+						<span class="iconfont iconxingbienv" 
+						v-if="userInfo.gender === 0"></span>
+
+						{{userInfo.nickname}}
+					</div>
+					<p>{{ moment(userInfo.create_date).format('YYYY-MM-DD') }}</p>
+				</div>
+				<!-- 右侧的箭头图标 -->
+				<span class="arrow iconfont iconjiantou1"></span>
 			</div>
-			<!-- 右侧的箭头图标 -->
-			<span class="arrow iconfont iconjiantou1"></span>
-		</div>
+		</router-link>
 
 		<!-- 组件的调用，单双标签都可以 -->
 		<!-- :key不是报错，可以不加，
