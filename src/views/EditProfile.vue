@@ -5,13 +5,13 @@
 
         <!-- 头像 -->
         <div class="avatar">
-            <img src="https://www.baidu.com/img/bd_logo1.png"/>
+            <img :src="$axios.defaults.baseURL + userInfo.head_img"/>
         </div>
 
         <!-- 按钮列表 -->
-        <Listbar label="昵称" tips="火星网友"/>
+        <Listbar label="昵称" :tips="userInfo.nickname"/>
         <Listbar label="密码" tips="******"/>
-        <Listbar label="性别" tips="男"/>
+        <Listbar label="性别" :tips="['女', '男'][userInfo.gender]"/>
     </div>
 </template>
 
@@ -22,9 +22,31 @@ import NavigateBar from "@/components/NavigateBar"
 import Listbar from "@/components/Listbar";
 
 export default {
+    data(){
+        return {
+            // 用户详情
+            userInfo: {}
+        }
+    },
     components: {
         NavigateBar,
         Listbar
+    },
+    mounted(){
+        // 只要能进入这个页面就表示肯定已经登陆
+        const userJson = JSON.parse(localStorage.getItem('userInfo'))
+        // 请求用户详情
+        this.$axios({
+            url: "/user/" + userJson.user.id,
+            // 添加头信息
+			headers: {
+				Authorization: userJson.token
+			}
+        }).then(res => {
+            const {data} = res.data;
+            // 保存到data
+            this.userInfo = data;
+        })
     }
 };
 </script>
