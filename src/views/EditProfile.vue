@@ -38,8 +38,19 @@
             <van-field v-model="password" placeholder="请输入密码" type="password" />
         </van-dialog>
 
+        <!-- 编辑性别的按钮 -->
+        <Listbar label="性别" 
+        :tips="['女', '男'][userInfo.gender]" 
+        @click.native="showGender = true"/>
 
-        <Listbar label="性别" :tips="['女', '男'][userInfo.gender]"/>
+        <!-- 编辑性别的弹窗 -->
+        <!-- close-on-click-action 自动关闭弹窗
+        actions 弹窗菜单的选项
+        select 选中某一项时候的事件 -->
+        <van-action-sheet v-model="showGender" 
+        close-on-click-action  
+        :actions="actions" 
+        @select="onSelect" />
     </div>
 </template>
 
@@ -60,11 +71,20 @@ export default {
             show: false,
             // 是否显示编辑密码的弹窗
             showPassword: false,
+            // 是否显示编辑性别的弹窗
+            showGender: false,
+            // 性别弹窗的选项
+            actions: [
+                // 对象的数据可以随意增加修改的，比如添加value属性用来传递给接口1/0
+                { name: '男', value: 1 },
+                { name: '女', value: 0 },
+            ],
 
             // 单独记录弹窗输入框昵称
             nickname: "",
             // 单独记录弹窗输入框密码
-            password: ""
+            password: "",
+
         }
     },
     components: {
@@ -156,6 +176,14 @@ export default {
         handleChangePassword(){
             // 调用编辑用户信息的函数
             this.handleEdit({ password: this.password });
+        },
+
+        // 选中性别的时候触发的事件，item是选择的当前项
+        onSelect(item) {
+            // 调用编辑用户信息的函数
+            this.handleEdit({ gender: item.value });
+            // 同步的修改当前显示的数据
+            this.userInfo.gender = item.value;
         }
     }
 };
