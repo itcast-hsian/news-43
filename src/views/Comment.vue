@@ -21,7 +21,7 @@
 
             <!-- 回复的文章标题 -->
             <router-link to="#" class="link-post">
-                原文：{{item.post.title}}
+                <div>原文：{{item.post.title}}</div>
                 <span class="iconfont iconjiantou1"></span>
             </router-link>
         </div>
@@ -88,18 +88,20 @@ export default {
 
     .link-post{
         display: flex;
+        justify-content: space-between;
         align-items: center;
-        position: relative;
-        padding-right: 30px;
         color:#999;
-        // 文字超出出现省略号一定是块元素才有作用
-        overflow: hidden;
-        text-overflow:ellipsis;
-        white-space: nowrap;
+        
+        div{
+            flex: 1;
+            // 文字超出出现省略号一定是块元素才有作用
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
+        }
 
         span{
-            position: absolute;
-            right: 0;
+            margin-left: 5px;
         }
     }
 }
