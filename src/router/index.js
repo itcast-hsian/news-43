@@ -38,6 +38,11 @@ const routes = [
 		// 我的跟帖页
 		path: "/comment",
 		component: () => import("@/views/Comment")
+	},
+	{
+		// 我的路由
+		path: "/star",
+		component: () => import("@/views/Star")
 	}
 ]
 
