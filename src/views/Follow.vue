@@ -10,7 +10,8 @@
                 <div>{{item.nickname}}</div>
                 <p>{{ moment(item.create_date).format("YYYY-MM-DD hh:mm:ss") }}</p>
             </div>
-            <span class="cancel">取消关注</span>
+            <!-- 点击取消关注时候把id传过去 -->
+            <span class="cancel" @click="handleCancel(item.id, index)">取消关注</span>
         </div>
     </div>
 </template>
@@ -26,7 +27,9 @@ export default {
             //我的关注列表
             follows: [],
             // 把moment挂载到data
-            moment
+            moment,
+            // 本地的用户数据 token
+            localUserJson: {}
         }
     },
     // 注册组件
@@ -36,6 +39,8 @@ export default {
     mounted(){
         // 获取token
         const localUserJson = JSON.parse(localStorage.getItem('userInfo'));
+        // 保存到data
+        this.localUserJson = localUserJson;
 
         // 请求列表数据
         this.$axios({
@@ -50,6 +55,28 @@ export default {
             this.follows = data;
         })
     },
+    methods: {
+        // 取消关注，参数id是模板传递过来的用户id
+        handleCancel(id, index){
+            // 弹窗提示
+            this.$dialog.confirm({
+				title: '提示',
+				message: '确定取消关注吗？'
+			}).then(() => {
+                // 根据id取消用户的关注,id是要取消的那个用户的id
+                this.$axios({
+                    url: "/user_unfollow/" + id,
+                    headers: {
+                        Authorization: this.localUserJson.token
+                    }
+                }).then(res => {
+                    this.$toast.success("取消关注成功");
+                    // 刷新页面的数据
+                    this.follows.splice(index, 1);
+                });
+            })
+        }
+    }
 };
 </script>
 
