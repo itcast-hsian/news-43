@@ -61,7 +61,7 @@ export default {
 			// 组织一个列表按钮栏的数据
 			rows: [
 				{ label: "我的关注", tips: "关注的用户", path: "/follow"},
-				{ label: "我的跟帖", tips: "跟帖回复", path: "/comments"},
+				{ label: "我的跟帖", tips: "跟帖回复", path: "/comment"},
 				{ label: "我的收藏", tips: "文章视频", path: "/star" }
 			],
 			// 个人的详细信息,初始值给一个对象
