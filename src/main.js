@@ -12,7 +12,7 @@ import axios from "axios";
 // 绑定到原型，加上之后以后就可以在组件中通过this.$axios来调用请求方法
 Vue.prototype.$axios = axios;
 // 给axios添加基准路径，添加完了之后请求的url就会拼接这个地址
-axios.defaults.baseURL = "http://localhost:3000"
+axios.defaults.baseURL = "http://127.0.0.1:3000"
 
 // 注册vant插件 （vue.use都是用来注册插件）
 Vue.use(Vant);

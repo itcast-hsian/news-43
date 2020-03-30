@@ -4,11 +4,11 @@
         <NavigateBar title="我的关注"/>
 
         <!-- 要循环的结构 -->
-        <div class="user-item">
-            <img src="https://dss0.baidu.com/73x1bjeh1BF3odCf/it/u=4139491198,1951725334&fm=85&s=EAB0AA454A5138DC2E90D90C0100C091">
+        <div class="user-item" v-for="(item, index) in follows" :key="index">
+            <img :src="$axios.defaults.baseURL + item.head_img">
             <div class="user-info">
-                <div>火星网友</div>
-                <p>2020-20-20</p>
+                <div>{{item.nickname}}</div>
+                <p>{{ moment(item.create_date).format("YYYY-MM-DD hh:mm:ss") }}</p>
             </div>
             <span class="cancel">取消关注</span>
         </div>
@@ -18,12 +18,38 @@
 <script>
 // 头部导航组件
 import NavigateBar from "@/components/NavigateBar"
+import moment from "moment"
 
 export default {
+    data(){
+        return {
+            //我的关注列表
+            follows: [],
+            // 把moment挂载到data
+            moment
+        }
+    },
     // 注册组件
     components: {
         NavigateBar
-    }
+    },
+    mounted(){
+        // 获取token
+        const localUserJson = JSON.parse(localStorage.getItem('userInfo'));
+
+        // 请求列表数据
+        this.$axios({
+            url: "/user_follows",
+            headers: {
+                Authorization: localUserJson.token
+            }
+        }).then(res => {
+            // data就是我的关注的用户列表
+            const {data} = res.data;
+            // 保存到data中的关注列表
+            this.follows = data;
+        })
+    },
 };
 </script>
 
