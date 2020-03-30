@@ -40,7 +40,7 @@ const routes = [
 		component: () => import("@/views/Comment")
 	},
 	{
-		// 我的路由
+		// 我的收藏页
 		path: "/star",
 		component: () => import("@/views/Star")
 	}
