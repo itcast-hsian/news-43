@@ -1,0 +1,175 @@
+<template>
+    <div>
+        <!-- 头部 -->
+        <NavigateBar title="编辑资料"/>
+
+        <!-- 头像 -->
+        <div class="avatar">
+            <img :src="$axios.defaults.baseURL + userInfo.head_img"/>
+
+            <!-- 上传图片的按钮，在afterRead里上传图片到服务器 -->
+            <van-uploader :after-read="afterRead" class="uploader"/>
+        </div>
+
+        <!-- 按钮列表 -->
+        <Listbar label="昵称" :tips="userInfo.nickname" @click.native="show = true"/>
+        <!-- 编辑昵称 -->
+        <van-dialog v-model="show" title="编辑昵称" show-cancel-button @confirm="handleNickname">
+            <van-field placeholder="请输入昵称" v-model="nickname"></van-field>
+        </van-dialog>
+
+        <!-- <Listbar label="密码" tips="******"/> -->
+        <Listbar label="性别" :tips="['女', '男'][userInfo.gender]" @click.native="show1 = true"/>
+        <!-- 性别选择的组件 -->
+        <van-action-sheet v-model="show1" :actions="actions" @select="onSelect" close-on-click-action />
+
+    </div>
+</template>
+
+<script>
+// 导入组件
+import NavigateBar from "@/components/NavigateBar"
+import Listbar from "@/components/Listbar"
+
+export default {
+    data(){
+        return {
+            // 用户的详情
+            userInfo: {},
+            localStorageUserJson: {},
+            show: false,
+            show1: false,
+            
+            // 性别选项
+            actions:  [
+                { name: '男', value: 1 },
+                { name: '女', value: 0 },
+            ],
+
+            nickname: ""
+        }
+    },
+    components: {
+        NavigateBar,
+        Listbar
+    },
+    // 组件一加载完毕触发
+    mounted(){
+        const localStorageUserJson = JSON.parse(localStorage.getItem("userInfo"));
+        this.localStorageUserJson = localStorageUserJson;
+
+        // 请求用户详情
+        this.$axios({
+            url: "/user/" + localStorageUserJson.user.id,
+            headers: {
+                Authorization: localStorageUserJson.token
+            }
+        }).then(res => {
+            const {data} = res.data;
+            // 保存到data
+            this.userInfo = data;
+
+            // 单独赋值
+            this.nickname = data.nickname
+        })
+    },
+    methods: {
+        // 上传图片
+        afterRead(file){
+            // 文件对象file.file;
+            // console.log(file.file)
+
+            // 文件通常都是用表单来上传，应该用js自己创建一个表单
+            const form = new FormData();
+            form.append('file', file.file);
+
+            // 上传图片
+            this.$axios({
+                url: "/upload",
+                method: "POST",
+                headers: {
+                    Authorization: this.localStorageUserJson.token
+                },
+                data: form
+            }).then(res => {
+                // 上传成功
+                const {data} = res.data;
+
+                // 编辑头像的接口
+                this.handleEdit({
+                    head_img: data.url
+                })
+
+            })
+        },
+        // 封装的请求函数
+        handleEdit(data){
+            // 编辑昵称
+            return this.$axios({
+                url: "/user_update/" + this.localStorageUserJson.user.id,
+                headers: {
+                    Authorization: this.localStorageUserJson.token
+                },
+                method: "POST",
+                data
+            }).then(res => {
+                // 成功之后的提示
+                this.$toast.success("修改成功");
+            })
+        },
+
+        // 编辑昵称
+        handleNickname(){
+            // 编辑昵称
+            const request = this.handleEdit({
+                nickname: this.nickname
+            });
+
+            // 请求成功之后执行方法
+            request.then(() => {
+                // 请求成功之后再修改昵称
+                this.userInfo.nickname = this.nickname;
+            })
+        },
+
+        // 选中性别时候触发的方法
+        onSelect(item){
+            const request = this.handleEdit({
+                gender: item.value // 1 | 0
+            });
+
+            // 请求成功之后执行方法
+            request.then(() => {
+                // 请求成功之后再修改性别
+                this.userInfo.gender = item.value;
+            })
+        }
+    }
+};
+</script>
+
+<style scoped lang="less">
+.avatar{
+    display: flex;
+    padding: 20 / 360 * 100vw;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+
+    img{
+        width:100 / 360 * 100vw;
+        height:100 / 360 * 100vw;
+        border-radius: 50%;
+    }
+
+    .uploader{
+        position: absolute;
+        width:100 / 360 * 100vw;
+        height:100 / 360 * 100vw;
+        left: 50%;
+        top: 50%;
+        transform: translateX(-50 / 360 * 100vw) translateY(-50 / 360 * 100vw);
+        opacity: 0;
+    }
+}
+</style>
