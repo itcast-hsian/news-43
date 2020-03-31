@@ -18,15 +18,22 @@
         <!-- swipeable: 是否开启手势滑动切换 -->
         <van-tabs v-model="active" sticky swipeable>
             <van-tab v-for="(item, index) in categories" :key="index" :title="item">
-                <div>
-                    <!-- 文章列表的组件 -->
-                    <!-- 只有单张图片的 -->
-                    <PostItem1/>
-                    <!-- 大于等于3张图片的组件 -->
-                    <PostItem2/>
-                    <!-- 视频的列表组件 -->
-                    <PostItem3/>
-                </div>
+
+                <!-- van的列表组件 -->
+                <!-- @load 滚动到底部时候触发的函数 -->
+                <van-list
+                    v-model="loading"
+                    :finished="finished"
+                    finished-text="我也是有底线的"
+                    @load="onLoad"
+                >
+
+                    <!-- 假设list是后台返回的数组，里有10个元素 -->
+                    <div v-for="(item, index) in list" :key="index">
+                        <!-- 只有单张图片的 -->
+                        <PostItem1/>
+                    </div>
+                </van-list>
             </van-tab>
         </van-tabs>
     </div>
@@ -47,7 +54,11 @@ export default {
             categories: ['关注','娱乐','体育','汽车','房产','关注',
             '关注','娱乐','体育','汽车','房产','关注', "∨"],
             // 记录当前tab的切换的索引
-            active: 0
+            active: 0,
+            // 假设这个数组是后台返回的数据
+            list: [1,1,1,1,1,1,1,1,1,1], // 10个1
+            loading: false, // 是否正在加载中
+            finished: false // 是否已经加载完毕
         }
     },
     // 监听属性
@@ -64,6 +75,26 @@ export default {
         PostItem1,
         PostItem2,
         PostItem3
+    },
+    methods: {
+        onLoad() {
+            console.log("已经拖动到了底部")
+            // 异步更新数据
+            // setTimeout 仅做示例，真实场景中一般为 ajax 请求
+            setTimeout(() => {
+                for (let i = 0; i < 10; i++) {
+                    this.list.push(1);
+                }
+
+                // 加载状态结束
+                this.loading = false;
+
+                // 数据全部加载完成
+                if (this.list.length >= 40) {
+                    this.finished = true;
+                }
+            }, 5000);
+        }
     }
 }
 </script>
