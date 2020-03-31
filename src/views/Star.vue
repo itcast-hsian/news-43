@@ -93,7 +93,7 @@ export default {
         display: block;
         object-fit: cover;
         margin-left: 10/360*100vw;
-        flex-shrink: 0;
+        flex-shrink: 0; // 防止图片在flex布局下被挤压
     }
 }
 
