@@ -5,7 +5,7 @@ import App from './App.vue'
 // 路由对象
 import router from './router'
 // 引入vant ui组件库
-import Vant from 'vant';
+import Vant, {Toast} from 'vant';
 // 导入axios
 import axios from "axios";
 
@@ -26,31 +26,47 @@ Vue.config.productionTip = false
 // next：必须要调用，next就类似于你nodejs的中间件，调用才会加载后面的内容
 router.beforeEach((to, from, next) => {
 
-  // 需要验证的页面
-  if(to.meta.authorization){
-    // 判断是否是登录状态，时候有token
-    // 如果本地的数据是空会返回null，null是没有token属性，会导致js报错，
-    // 所以可以加个判断，如果本地的数据空的，等于空的对象
-    const userJson = JSON.parse(localStorage.getItem('userInfo')) || {};
+	// 需要验证的页面
+	if (to.meta.authorization) {
+		// 判断是否是登录状态，时候有token
+		// 如果本地的数据是空会返回null，null是没有token属性，会导致js报错，
+		// 所以可以加个判断，如果本地的数据空的，等于空的对象
+		const userJson = JSON.parse(localStorage.getItem('userInfo')) || {};
 
-    // 有token可以正常访问
-    if(userJson.token){
-      next();
-    }else{
-      // 跳转到登录页,next这个函数可以传递路径，并且会跳转该路径
-      next("/login");
-    }
-  }else{
-    // 非个人中心页
-    next();
-  }
+		// 有token可以正常访问
+		if (userJson.token) {
+			next();
+		} else {
+			// 跳转到登录页,next这个函数可以传递路径，并且会跳转该路径
+			next("/login");
+		}
+	} else {
+		// 非个人中心页
+		next();
+	}
 })
+
+// axios的响应拦截器 文档地址：https://github.com/axios/axios#interceptors
+axios.interceptors.response.use(res => {
+	return res;
+}, error => {
+	// 如果请求返回的结果是错误的，会进入到错误的处理函数中
+	// error是js原生的错误对象，我们可以用过error.response可以获取到详细的信息
+	const {statusCode, message} = error.response.data;
+
+	if(statusCode === 400){
+		Toast.fail(message);
+	}
+
+	return Promise.reject(error)
+})
+
 
 // 创建一个根实例
 // .$mount('#app') 相当于el配置，指定id为app的元素作为模板
 new Vue({
-  // 路由对象
-  router,
-  // 加载第一个子组件，最底层的组件，（写法是固定的）
-  render: h => h(App)
+	// 路由对象
+	router,
+	// 加载第一个子组件，最底层的组件，（写法是固定的）
+	render: h => h(App)
 }).$mount('#app')
