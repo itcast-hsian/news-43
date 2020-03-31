@@ -19,15 +19,7 @@
         <van-tabs v-model="active" sticky swipeable>
             <van-tab v-for="(item, index) in categories" :key="index" :title="item">
                 <div>
-                    <p>内容 {{ index }}</p>
-                    <p>内容 {{ index }}</p>
-                    <p>内容 {{ index }}</p>
-                    <p>内容 {{ index }}</p>
-                    <p>内容 {{ index }}</p>
-                    <p>内容 {{ index }}</p>
-                    <p>内容 {{ index }}</p>
-                    <p>内容 {{ index }}</p>
-                    <p>内容 {{ index }}</p>
+                    <p v-for="item in 200">内容 {{ index }}</p>
                 </div>
             </van-tab>
         </van-tabs>
@@ -90,5 +82,30 @@ export default {
 // 如果在scoped声明中去修改第三方库的class样式，必须要在前面添加/deep/
 /deep/ .van-tabs__nav{
     background: #eee;
+}
+
+/deep/ .van-tab:nth-last-child(2){
+    background: #eee;
+    width: 20px!important;
+    position: absolute;
+    right:0; 
+    top: 0;
+    box-sizing:unset;
+}
+
+/deep/ .van-tabs__wrap{
+    padding-right: 20px;
+}
+
+/deep/ .van-tabs__nav{
+    position: static;
+}
+
+/deep/ .van-tabs__line{
+    display: none;
+}
+
+/deep/ .van-tab--active{
+    border-bottom: 1px #ff0000 solid;
 }
 </style>
