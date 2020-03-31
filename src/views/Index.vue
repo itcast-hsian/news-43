@@ -19,7 +19,11 @@
         <van-tabs v-model="active" sticky swipeable>
             <van-tab v-for="(item, index) in categories" :key="index" :title="item">
                 <div>
-                    <p v-for="item in 200">内容 {{ index }}</p>
+                    <!-- 文章列表的组件 -->
+                    <!-- 只有单张图片的 -->
+                    <PostItem1/>
+                    <!-- 大于等于3张图片的组件 -->
+                    <PostItem2/>
                 </div>
             </van-tab>
         </van-tabs>
@@ -27,6 +31,11 @@
 </template>
 
 <script>
+// 文章列表的组件,只有单张图片的
+import PostItem1 from "@/components/PostItem1"
+// 大于等于3张图片的组件
+import PostItem2 from "@/components/PostItem2"
+
 export default {
     data(){
         return {
@@ -46,6 +55,10 @@ export default {
                 this.$router.push("/栏目管理")
             }
         }
+    },
+    components: {
+        PostItem1,
+        PostItem2
     }
 }
 </script>
