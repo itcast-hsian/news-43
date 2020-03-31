@@ -8,6 +8,10 @@ Vue.use(VueRouter)
 // 路由配置
 const routes = [
 	{
+		path: "/",
+		component: () => import("@/views/Index")
+	},
+	{
 		// 登录页
 		path: "/login",
 		// 除了首页之外的页面都可以用懒加载,@符号代表的src这个目录
