@@ -24,6 +24,8 @@
                     <PostItem1/>
                     <!-- 大于等于3张图片的组件 -->
                     <PostItem2/>
+                    <!-- 视频的列表组件 -->
+                    <PostItem3/>
                 </div>
             </van-tab>
         </van-tabs>
@@ -35,6 +37,8 @@
 import PostItem1 from "@/components/PostItem1"
 // 大于等于3张图片的组件
 import PostItem2 from "@/components/PostItem2"
+// 视频的列表组件
+import PostItem3 from "@/components/PostItem3"
 
 export default {
     data(){
@@ -58,7 +62,8 @@ export default {
     },
     components: {
         PostItem1,
-        PostItem2
+        PostItem2,
+        PostItem3
     }
 }
 </script>
