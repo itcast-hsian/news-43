@@ -19,21 +19,24 @@
         <van-tabs v-model="active" sticky swipeable>
             <van-tab v-for="(item, index) in categories" :key="index" :title="item">
 
-                <!-- van的列表组件 -->
-                <!-- @load 滚动到底部时候触发的函数 -->
-                <van-list
-                    v-model="loading"
-                    :finished="finished"
-                    finished-text="我也是有底线的"
-                    @load="onLoad"
-                >
+                <!-- 下拉刷新 -->
+                <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+                    <!-- van的列表组件 -->
+                    <!-- @load 滚动到底部时候触发的函数 -->
+                    <van-list
+                        v-model="loading"
+                        :finished="finished"
+                        finished-text="我也是有底线的"
+                        @load="onLoad"
+                    >
 
-                    <!-- 假设list是后台返回的数组，里有10个元素 -->
-                    <div v-for="(item, index) in list" :key="index">
-                        <!-- 只有单张图片的 -->
-                        <PostItem1/>
-                    </div>
-                </van-list>
+                        <!-- 假设list是后台返回的数组，里有10个元素 -->
+                        <div v-for="(item, index) in list" :key="index">
+                            <!-- 只有单张图片的 -->
+                            <PostItem1/> {{index}}
+                        </div>
+                    </van-list>
+                </van-pull-refresh>
             </van-tab>
         </van-tabs>
     </div>
@@ -58,7 +61,8 @@ export default {
             // 假设这个数组是后台返回的数据
             list: [1,1,1,1,1,1,1,1,1,1], // 10个1
             loading: false, // 是否正在加载中
-            finished: false // 是否已经加载完毕
+            finished: false, // 是否已经加载完毕
+            refreshing: false , // 是否正在下拉加载
         }
     },
     // 监听属性
@@ -94,6 +98,11 @@ export default {
                     this.finished = true;
                 }
             }, 5000);
+        },
+        onRefresh() {
+            // 表示加载完毕
+            this.refreshing = false;
+            console.log("正在下拉刷新")
         }
     }
 }
