@@ -32,7 +32,19 @@ export default {
         return {
             // 菜单的数据
             categories: ['关注','娱乐','体育','汽车','房产','关注',
-            '关注','娱乐','体育','汽车','房产','关注', "∨"]
+            '关注','娱乐','体育','汽车','房产','关注', "∨"],
+            // 记录当前tab的切换的索引
+            active: 0
+        }
+    },
+    // 监听属性
+    watch: {
+        // 监听tab栏的切换
+        active(){
+            // 判断如果点击的是最后一个图标，跳转到栏目管理页
+            if(this.active === this.categories.length - 1){
+                this.$router.push("/栏目管理")
+            }
         }
     }
 }
@@ -82,6 +94,10 @@ export default {
 // 如果在scoped声明中去修改第三方库的class样式，必须要在前面添加/deep/
 /deep/ .van-tabs__nav{
     background: #eee;
+}
+
+/deep/ .van-tab{
+    flex-basis: 15%!important;
 }
 
 /deep/ .van-tab:nth-last-child(2){
