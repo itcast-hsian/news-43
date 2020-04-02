@@ -207,7 +207,7 @@ export default {
                 return;
             }
 
-            const {pageIndex, id, posts} = this.categories[this.active];
+            const {pageIndex, id} = this.categories[this.active];
 
             // 加载下一页的数据
             this.$axios({
@@ -220,10 +220,13 @@ export default {
             }).then(res => {
                 const {data, total} = res.data;
                 // 把新的文章数据合并到原来的文章列表中
-                this.categories[this.active].posts = [...posts, ...data]; 
+                this.categories[this.active].posts = [...this.categories[this.active].posts, ...data]; 
 
                 // 加载状态结束
                 this.categories[this.active].loading = false;
+
+                // 赋值的方式页面才会更新
+                this.categories = [...this.categories];
 
                 // 是否是最后一页
                 if(this.categories[this.active].posts.length === total){
@@ -231,8 +234,7 @@ export default {
                     this.categories[this.active].finished = true;
                 }
 
-                // 赋值的方式页面才会更新
-                this.categories = [...this.categories];
+                
             })
         },
 
