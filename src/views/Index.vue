@@ -71,6 +71,8 @@ export default {
             categories: [],
             // 记录当前tab的切换的索引
             active: 0,
+            // 记录当前的栏目的id
+            categoryId: 999,
             // 假设这个文章数组是后台返回的数据
             list: [],
             loading: false, // 是否正在加载中
@@ -113,8 +115,10 @@ export default {
                 this.getCategories();
                 return;
             }
-
             this.categories = categories;
+
+            // 给每个栏目都加上pageIndex = 1
+            this.handleCategories();
         }else{
             // 获取栏目数据
             this.getCategories(token);
@@ -125,7 +129,7 @@ export default {
             url: "/post",
             // params就是url问号后面的参数
             params: {
-                category: 999
+                category: this.categoryId
             }
         }).then(res => {
             // 文章的数据
@@ -135,6 +139,14 @@ export default {
         })
     },
     methods: {
+        // 循环给栏目加上pageIndex，每个栏目都是自己的pageIndex
+        handleCategories(){
+            this.categories = this.categories.map(v => {
+                v.pageIndex = 1;
+                return v;
+            })
+        },
+
         // 获取栏目数据, 如果有token加上到头信息。没有就不加
         getCategories(token){
             // 请求的配置
@@ -159,26 +171,31 @@ export default {
                 this.categories = data;
                 // 把菜单的数据保存到本地
                 localStorage.setItem("categories", JSON.stringify(data));
+                // 给每个栏目都加上pageIndex = 1
+                this.handleCategories();
             })
         },
 
         onLoad() {
-            console.log("已经拖动到了底部")
+            // 加载下一页的数据
+
+
+            
             // 异步更新数据
             // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-            setTimeout(() => {
-                for (let i = 0; i < 10; i++) {
-                    this.list.push(1);
-                }
+            // setTimeout(() => {
+            //     for (let i = 0; i < 10; i++) {
+            //         this.list.push(1);
+            //     }
 
-                // 加载状态结束
-                this.loading = false;
+            //     // 加载状态结束
+            //     this.loading = false;
 
-                // 数据全部加载完成
-                if (this.list.length >= 40) {
-                    this.finished = true;
-                }
-            }, 5000);
+            //     // 数据全部加载完成
+            //     if (this.list.length >= 40) {
+            //         this.finished = true;
+            //     }
+            // }, 5000);
         },
         onRefresh() {
             // 表示加载完毕
