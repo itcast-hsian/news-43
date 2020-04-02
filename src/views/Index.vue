@@ -23,7 +23,9 @@
                 <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
                     <!-- van的列表组件 -->
                     <!-- @load 滚动到底部时候触发的函数 -->
+                    <!-- immediate-check 这个属性可以阻止list组件默认就加载一次 -->
                     <van-list
+                        :immediate-check="false"
                         v-model="loading"
                         :finished="finished"
                         finished-text="我也是有底线的"
@@ -129,7 +131,9 @@ export default {
             url: "/post",
             // params就是url问号后面的参数
             params: {
-                category: this.categoryId
+                pageIndex: 1,
+                pageSize: 5,
+                category: this.categoryId   
             }
         }).then(res => {
             // 文章的数据
@@ -177,25 +181,29 @@ export default {
         },
 
         onLoad() {
+            // 当前栏目下pageIndex加1
+            this.categories[this.active].pageIndex += 1
+
             // 加载下一页的数据
+            this.$axios({
+                url: "/post",
+                params: {
+                    pageIndex: this.categories[this.active].pageIndex,
+                    pageSize: 5,
+                    category: this.categoryId
+                }
+            }).then(res => {
+                const {data, total} = res.data;
+                // 把新的文章数据合并到原来的文章列表中
+                this.list = [...this.list, ...data];
+                // 加载状态结束
+                this.loading = false;
 
-
-            
-            // 异步更新数据
-            // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-            // setTimeout(() => {
-            //     for (let i = 0; i < 10; i++) {
-            //         this.list.push(1);
-            //     }
-
-            //     // 加载状态结束
-            //     this.loading = false;
-
-            //     // 数据全部加载完成
-            //     if (this.list.length >= 40) {
-            //         this.finished = true;
-            //     }
-            // }, 5000);
+                // 是否是最后一页
+                if(this.list.length === total){
+                    this.finished = true;
+                }
+            })
         },
         onRefresh() {
             // 表示加载完毕
