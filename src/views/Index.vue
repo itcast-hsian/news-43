@@ -26,8 +26,8 @@
                     <!-- immediate-check 这个属性可以阻止list组件默认就加载一次 -->
                     <van-list
                         :immediate-check="false"
-                        v-model="loading"
-                        :finished="finished"
+                        v-model="categories[active].loading"
+                        :finished="categories[active].finished"
                         finished-text="我也是有底线的"
                         @load="onLoad"
                     >
@@ -77,8 +77,8 @@ export default {
             categoryId: 999,
             // 假设这个文章数组是后台返回的数据
             // list: [],
-            loading: false, // 是否正在加载中
-            finished: false, // 是否已经加载完毕
+            //loading: false, // 是否正在加载中
+            //finished: false, // 是否已经加载完毕
             refreshing: false , // 是否正在下拉加载
         }
     },
@@ -155,7 +155,9 @@ export default {
         handleCategories(){
             this.categories = this.categories.map(v => {
                 v.pageIndex = 1;
-                v.posts = []
+                v.posts = [];
+                v.loading = false;
+                v.finished = false;
                 return v;
             })
         },
@@ -200,6 +202,11 @@ export default {
 
         // 封装一个请求文章列表的方法
         getList(){
+            // 如果当前的栏目数据已经加载完毕了，直接return；
+            if(this.categories[this.active].finished){
+                return;
+            }
+
             const {pageIndex, id, posts} = this.categories[this.active];
 
             // 加载下一页的数据
@@ -213,17 +220,19 @@ export default {
             }).then(res => {
                 const {data, total} = res.data;
                 // 把新的文章数据合并到原来的文章列表中
-                // 这里因为active也会导致页面更新
-                this.categories[this.active].posts = [...posts, ...data];
+                this.categories[this.active].posts = [...posts, ...data]; 
+
                 // 加载状态结束
-                this.loading = false;
+                this.categories[this.active].loading = false;
 
                 // 是否是最后一页
                 if(this.categories[this.active].posts.length === total){
-                    this.finished = true;
+                    // 当前栏目的文章已经加载完毕
+                    this.categories[this.active].finished = true;
                 }
 
-                console.log(this.categories)
+                // 赋值的方式页面才会更新
+                this.categories = [...this.categories];
             })
         },
 
