@@ -1,17 +1,20 @@
 <template>
     <div class="imgList">
-        <h4>林志玲穿透视黑纱裙米兰看秀腹部微隆显孕味</h4>
+        <h4>{{data.title}}</h4>
         <div class="images">
-            <img src="https://www.baidu.com/img/bd_logo1.png" />
-            <img src="https://www.baidu.com/img/bd_logo1.png" />
-            <img src="https://www.baidu.com/img/bd_logo1.png" />
+            <img v-for="(item, index) in data.cover" 
+            :key="index"
+            :src="$axios.defaults.baseURL + item.url" />
         </div>
-        <p>火星时报 52跟帖</p>
+        <p>{{data.user.nickname}} {{data.comment_length}}跟帖</p>
     </div>
 </template>
 
 <script>
-export default {};
+export default {
+    // 传入的文章数据
+    props: ['data']
+};
 </script>
 
 <style scoped lang="less">

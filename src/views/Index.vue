@@ -33,7 +33,19 @@
                         <!-- 假设list是后台返回的数组，里有10个元素 -->
                         <div v-for="(item, index) in list" :key="index">
                             <!-- 只有单张图片的 -->
-                            <PostItem1/>
+                            <PostItem1 
+                            v-if="item.type === 1 && item.cover.length > 0 && item.cover.length < 3"
+                            :data="item"/>
+
+                            <!-- 大于等于3张图片 -->
+                            <PostItem2 
+                            v-if="item.type === 1 && item.cover.length >= 3"
+                            :data="item"/>
+
+                            <!-- 视频 -->
+                            <PostItem3 
+                            v-if="item.type === 2"
+                            :data="item"/>
                         </div>
                     </van-list>
                 </van-pull-refresh>
@@ -59,8 +71,8 @@ export default {
             categories: [],
             // 记录当前tab的切换的索引
             active: 0,
-            // 假设这个数组是后台返回的数据
-            list: [1,1,1,1,1,1,1,1,1,1], // 10个1
+            // 假设这个文章数组是后台返回的数据
+            list: [],
             loading: false, // 是否正在加载中
             finished: false, // 是否已经加载完毕
             refreshing: false , // 是否正在下拉加载
@@ -89,11 +101,13 @@ export default {
 
         // 如果本地有数据，获取本地的数据来渲染
         if(categories){
+            // 登录了(有token)但是第一条不是关注
             if(categories[0].name !== "关注" && token){
                 // 获取栏目数据
                 this.getCategories(token);
                 return;
             }
+            // 登录了(有token)但是第一条不是关注
             if(categories[0].name === "关注" && !token){
                 // 获取栏目数据
                 this.getCategories();
@@ -105,6 +119,20 @@ export default {
             // 获取栏目数据
             this.getCategories(token);
         }
+
+        // 请求文章列表，页面一开始都是请求头条栏目下的文章，头条栏目的id是999
+        this.$axios({
+            url: "/post",
+            // params就是url问号后面的参数
+            params: {
+                category: 999
+            }
+        }).then(res => {
+            // 文章的数据
+            const {data} = res.data;
+            // 保存到data的list中
+            this.list = data;
+        })
     },
     methods: {
         // 获取栏目数据, 如果有token加上到头信息。没有就不加
