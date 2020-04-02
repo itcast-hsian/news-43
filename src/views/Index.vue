@@ -17,7 +17,7 @@
         <!-- sticky：是否使用粘性定位布局 -->
         <!-- swipeable: 是否开启手势滑动切换 -->
         <van-tabs v-model="active" sticky swipeable>
-            <van-tab v-for="(item, index) in categories" :key="index" :title="item">
+            <van-tab v-for="(item, index) in categories" :key="index" :title="item.name">
 
                 <!-- 下拉刷新 -->
                 <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
@@ -33,7 +33,7 @@
                         <!-- 假设list是后台返回的数组，里有10个元素 -->
                         <div v-for="(item, index) in list" :key="index">
                             <!-- 只有单张图片的 -->
-                            <PostItem1/> {{index}}
+                            <PostItem1/>
                         </div>
                     </van-list>
                 </van-pull-refresh>
@@ -54,8 +54,9 @@ export default {
     data(){
         return {
             // 菜单的数据
-            categories: ['关注','娱乐','体育','汽车','房产','关注',
-            '关注','娱乐','体育','汽车','房产','关注', "∨"],
+            // categories: ['关注','娱乐','体育','汽车','房产','关注',
+            // '关注','娱乐','体育','汽车','房产','关注', "∨"],
+            categories: [],
             // 记录当前tab的切换的索引
             active: 0,
             // 假设这个数组是后台返回的数据
@@ -79,6 +80,30 @@ export default {
         PostItem1,
         PostItem2,
         PostItem3
+    },
+    mounted(){
+        // 在请求之前，应该先判断本地有没栏目数据
+        const categories = JSON.parse(localStorage.getItem("categories"));
+
+        // 如果本地有数据，获取本地的数据来渲染
+        if(categories){
+            this.categories = categories;
+        }else{
+            // 没有本地的数据才去请求栏目接口
+            this.$axios({
+                url: "/category"
+            }).then(res => {
+                // 菜单的数据
+                const {data} = res.data;
+                // 给data添加一个点击跳转到栏目管理的图标
+                data.push({
+                    name: "∨"
+                })
+                this.categories = data;
+                // 把菜单的数据保存到本地
+                localStorage.setItem("categories", JSON.stringify(data));
+            })
+        }
     },
     methods: {
         onLoad() {
