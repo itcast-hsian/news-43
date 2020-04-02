@@ -89,7 +89,11 @@ export default {
             // 判断如果点击的是最后一个图标，跳转到栏目管理页
             if(this.active === this.categories.length - 1){
                 this.$router.push("/栏目管理")
+                return;
             }
+
+            // 请求不同的栏目的数据
+            this.getList();
         }
     },
     components: {
@@ -143,6 +147,7 @@ export default {
         })
     },
     methods: {
+        // 当栏目数据加载完成后
         // 循环给栏目加上pageIndex，每个栏目都是自己的pageIndex
         handleCategories(){
             this.categories = this.categories.map(v => {
@@ -180,17 +185,26 @@ export default {
             })
         },
 
+        // 加载下一页的数据
         onLoad() {
             // 当前栏目下pageIndex加1
             this.categories[this.active].pageIndex += 1
+
+            // 请求文章列表
+            this.getList();
+        },
+
+        // 封装一个请求文章列表的方法
+        getList(){
+            const {pageIndex, id} = this.categories[this.active];
 
             // 加载下一页的数据
             this.$axios({
                 url: "/post",
                 params: {
-                    pageIndex: this.categories[this.active].pageIndex,
+                    pageIndex: pageIndex,
                     pageSize: 5,
-                    category: this.categoryId
+                    category: id
                 }
             }).then(res => {
                 const {data, total} = res.data;
@@ -205,6 +219,7 @@ export default {
                 }
             })
         },
+
         onRefresh() {
             // 表示加载完毕
             this.refreshing = false;
