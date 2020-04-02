@@ -33,7 +33,7 @@
                     >
 
                         <!-- 假设list是后台返回的数组，里有10个元素 -->
-                        <div v-for="(item, index) in list" :key="index">
+                        <div v-for="(item, index) in categories[active].posts" :key="index">
                             <!-- 只有单张图片的 -->
                             <PostItem1 
                             v-if="item.type === 1 && item.cover.length > 0 && item.cover.length < 3"
@@ -76,7 +76,7 @@ export default {
             // 记录当前的栏目的id
             categoryId: 999,
             // 假设这个文章数组是后台返回的数据
-            list: [],
+            // list: [],
             loading: false, // 是否正在加载中
             finished: false, // 是否已经加载完毕
             refreshing: false , // 是否正在下拉加载
@@ -142,16 +142,20 @@ export default {
         }).then(res => {
             // 文章的数据
             const {data} = res.data;
-            // 保存到data的list中
-            this.list = data;
-        })
+            // 如果是修改数组中某一项的属性，不会驱动视图的更新的
+            this.categories[this.active].posts = data;
+            // 赋值的方式可以引起模板的刷新
+            this.categories = [...this.categories];
+        });
     },
     methods: {
         // 当栏目数据加载完成后
-        // 循环给栏目加上pageIndex，每个栏目都是自己的pageIndex
+        // 循环给栏目加上pageIndex, 文章列表
+        // 每个栏目都是自己的pageIndex，文章列表
         handleCategories(){
             this.categories = this.categories.map(v => {
                 v.pageIndex = 1;
+                v.posts = []
                 return v;
             })
         },
@@ -196,7 +200,7 @@ export default {
 
         // 封装一个请求文章列表的方法
         getList(){
-            const {pageIndex, id} = this.categories[this.active];
+            const {pageIndex, id, posts} = this.categories[this.active];
 
             // 加载下一页的数据
             this.$axios({
@@ -209,14 +213,17 @@ export default {
             }).then(res => {
                 const {data, total} = res.data;
                 // 把新的文章数据合并到原来的文章列表中
-                this.list = [...this.list, ...data];
+                // 这里因为active也会导致页面更新
+                this.categories[this.active].posts = [...posts, ...data];
                 // 加载状态结束
                 this.loading = false;
 
                 // 是否是最后一页
-                if(this.list.length === total){
+                if(this.categories[this.active].posts.length === total){
                     this.finished = true;
                 }
+
+                console.log(this.categories)
             })
         },
 
