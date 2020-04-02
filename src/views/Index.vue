@@ -84,15 +84,44 @@ export default {
     mounted(){
         // 在请求之前，应该先判断本地有没栏目数据
         const categories = JSON.parse(localStorage.getItem("categories"));
+        // 本地的token
+        const {token} = JSON.parse(localStorage.getItem('userInfo')) || {};
 
         // 如果本地有数据，获取本地的数据来渲染
         if(categories){
+            if(categories[0].name !== "关注" && token){
+                // 获取栏目数据
+                this.getCategories(token);
+                return;
+            }
+            if(categories[0].name === "关注" && !token){
+                // 获取栏目数据
+                this.getCategories();
+                return;
+            }
+
             this.categories = categories;
         }else{
-            // 没有本地的数据才去请求栏目接口
-            this.$axios({
+            // 获取栏目数据
+            this.getCategories(token);
+        }
+    },
+    methods: {
+        // 获取栏目数据, 如果有token加上到头信息。没有就不加
+        getCategories(token){
+            // 请求的配置
+            const config = {
                 url: "/category"
-            }).then(res => {
+            }
+            // 如果有token，把token添加到头信息中
+            // 如果有token请求回来的数据就会有关注的栏目，因为代表是登录的
+            // 如果没有token就没有关注的栏目
+            if(token){
+                config.headers = { Authorization: token };
+            }
+
+            // 没有本地的数据才去请求栏目接口
+            this.$axios(config).then(res => {
                 // 菜单的数据
                 const {data} = res.data;
                 // 给data添加一个点击跳转到栏目管理的图标
@@ -103,9 +132,8 @@ export default {
                 // 把菜单的数据保存到本地
                 localStorage.setItem("categories", JSON.stringify(data));
             })
-        }
-    },
-    methods: {
+        },
+
         onLoad() {
             console.log("已经拖动到了底部")
             // 异步更新数据
