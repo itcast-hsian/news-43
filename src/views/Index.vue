@@ -17,7 +17,7 @@
         <!-- sticky：是否使用粘性定位布局 -->
         <!-- swipeable: 是否开启手势滑动切换 -->
         <van-tabs v-model="active" sticky swipeable>
-            <van-tab v-for="(item, index) in categories" :key="index" :title="item">
+            <van-tab v-for="(item, index) in categories" :key="index" :title="item.name">
 
                 <!-- 下拉刷新 -->
                 <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
@@ -33,7 +33,8 @@
                         <!-- 假设list是后台返回的数组，里有10个元素 -->
                         <div v-for="(item, index) in list" :key="index">
                             <!-- 只有单张图片的 -->
-                            <PostItem1/> {{index}}
+                            <!-- <PostItem1/>  -->
+                            {{index}}
                         </div>
                     </van-list>
                 </van-pull-refresh>
@@ -54,8 +55,7 @@ export default {
     data(){
         return {
             // 菜单的数据
-            categories: ['关注','娱乐','体育','汽车','房产','关注',
-            '关注','娱乐','体育','汽车','房产','关注', "∨"],
+            categories: [],
             // 记录当前tab的切换的索引
             active: 0,
             // 假设这个数组是后台返回的数据
@@ -63,6 +63,8 @@ export default {
             loading: false, // 是否正在加载中
             finished: false, // 是否已经加载完毕
             refreshing: false , // 是否正在下拉加载
+
+            token: "",
         }
     },
     // 监听属性
@@ -80,7 +82,40 @@ export default {
         PostItem2,
         PostItem3
     },
+    mounted(){
+        // 获取本地的token,如果没有值就等于一个空对象
+        const {token} = JSON.parse(localStorage.getItem('userInfo')) || {}
+        // 把token保存到data
+        this.token = token;
+        // 调用请求栏目的数据
+        this.getCategories();
+        
+    },
     methods: {
+        // 请求获取菜单栏目数据
+        getCategories(){
+            // 请求的配置
+            const config = {
+                url: "/category"
+            }
+            // 如果token有值，给请求的配置加上headers
+            if(this.token){
+                config.headers = {
+                    Authorization: this.token
+                }
+            }
+
+            this.$axios(config).then(res => {
+                // 把栏目数据保存到data
+                const {data} = res.data;
+                // 给数组最后添加一个跳转到栏目管理的图标
+                data.push({
+                    name: "∨"
+                })
+                this.categories = data;
+            })
+        },
+
         onLoad() {
             console.log("已经拖动到了底部")
             // 异步更新数据
