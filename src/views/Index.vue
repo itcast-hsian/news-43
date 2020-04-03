@@ -87,9 +87,23 @@ export default {
         const {token} = JSON.parse(localStorage.getItem('userInfo')) || {}
         // 把token保存到data
         this.token = token;
-        // 调用请求栏目的数据
-        this.getCategories();
-        
+        // 本地的栏目数据
+        const categories = JSON.parse(localStorage.getItem('categories'));
+
+        if(categories){
+            // 如果当前是登录的状态，但是栏目的第一项居然不是“关注”，需要重新请求
+            // 如果当前未登录，但是栏目的第一项居然叫“关注”，也需要重新请求
+            if( token && categories[0].name !== "关注" ||
+                !token && categories[0].name === "关注"){
+                // 调用请求栏目的数据,并且保存到本地
+                this.getCategories();
+            }else{
+                this.categories = categories;
+            }
+        }else{
+            // 调用请求栏目的数据,并且保存到本地
+            this.getCategories();
+        }
     },
     methods: {
         // 请求获取菜单栏目数据
@@ -113,6 +127,8 @@ export default {
                     name: "∨"
                 })
                 this.categories = data;
+                // 保存到本地
+                localStorage.setItem('categories', JSON.stringify(data));
             })
         },
 
