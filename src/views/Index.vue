@@ -26,20 +26,20 @@
                     <!-- immediate-check关闭list加载后触发一次 load 事件 -->
                     <van-list
                         immediate-check
-                        v-model="loading"
-                        :finished="finished"
+                        v-model="item.loading"
+                        :finished="item.finished"
                         finished-text="我也是有底线的"
                         @load="onLoad"
                     >
 
                         <!-- 假设list是后台返回的数组，里有10个元素 -->
-                        <div v-for="(item, index) in list" :key="index">
+                        <div v-for="(subItem, subIndex) in item.list" :key="subIndex">
                             <!-- 只有单张图片的 -->
-                            <PostItem1 :data="item" v-if="item.type === 1 && item.cover.length < 3"/> 
+                            <PostItem1 :data="subItem" v-if="subItem.type === 1 && subItem.cover.length < 3"/> 
                             <!-- 大于等于3张图片 -->
-                            <PostItem2 :data="item" v-if="item.type === 1 && item.cover.length >= 3"/> 
+                            <PostItem2 :data="subItem" v-if="subItem.type === 1 && subItem.cover.length >= 3"/> 
                             <!-- 视频 -->
-                            <PostItem3 :data="item" v-if="item.type === 2"/>
+                            <PostItem3 :data="subItem" v-if="subItem.type === 2"/>
                         </div>
                     </van-list>
                 </van-pull-refresh>
@@ -63,12 +63,7 @@ export default {
             categories: [],
             // 记录当前tab的切换的索引
             active: 0,
-            // 数组是后台返回的数据
-            list: [], 
-            loading: false, // 是否正在加载中
-            finished: false, // 是否已经加载完毕
             refreshing: false , // 是否正在下拉加载
-
             token: "",
         }
     },
@@ -120,6 +115,9 @@ export default {
         handleCategories(){
             this.categories = this.categories.map(v => {
                 v.pageIndex = 1; // 给每个栏目都添加了一个pageIndex属性
+                v.list = []; // 给每个栏目都拥有自己的文章列表
+                v.loading = false;  // 给每个栏目都添加是否正在请求的状态
+                v.finished = false; // 给每个栏目都添加一个文章是否全部加载完毕的状态
                 return v;
             })
         },
@@ -154,10 +152,10 @@ export default {
 
         // 请求文章列表
         getList(){
-            // 当前栏目的id
-            const {id, pageIndex} = this.categories[this.active];
+            // 当前栏目的id,pageIndex,finished
+            const {id, pageIndex, finished} = this.categories[this.active];
             //  如果数据已经加载完毕到了最后一页，就直接return；
-            if(this.finished) return;
+            if(finished) return;
 
             this.$axios({
                 url: "/post",
@@ -168,15 +166,17 @@ export default {
                 }
             }).then(res => {
                 const {data, total} = res.data;
-                // 保存到data的文章列表中
-                this.list = [...this.list, ...data];
+                // 把data新数组和当前栏目的文章列表合并
+                this.categories[this.active].list = [...this.categories[this.active].list, ...data];
+                // 用赋值的方式触发页面刷新
+                this.categories = [...this.categories];
 
                 // 告诉组件当前的请求加载完毕
-                this.loading = false;
+                this.categories[this.active].loading = false;
                 
                 // 如果当前文章的条数等于total总条数，说明数据已经加载完毕
-                if(this.list.length === total){
-                    this.finished = true;
+                if(this.categories[this.active].list.length === total){
+                    this.categories[this.active].finished = true;
                 }
             })
         },
