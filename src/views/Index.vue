@@ -75,6 +75,9 @@ export default {
             if(this.active === this.categories.length - 1){
                 this.$router.push("/栏目管理")
             }
+
+            // 当栏目切换时候，需要重新的请求当前栏目的数据
+            this.getList();
         }
     },
     components: {
@@ -153,18 +156,30 @@ export default {
         // 请求文章列表
         getList(){
             // 当前栏目的id,pageIndex,finished
-            const {id, pageIndex, finished} = this.categories[this.active];
+            const {id, pageIndex, finished, name} = this.categories[this.active];
             //  如果数据已经加载完毕到了最后一页，就直接return；
             if(finished) return;
-
-            this.$axios({
+            // 请求文章的配置
+            const config = {
                 url: "/post",
                 params: {
                     pageIndex, // 每个栏目页数是不一样的
                     pageSize: 5, //  请求数据的条数
                     category: id
                 }
-            }).then(res => {
+            }
+            // 判断当前栏目是否是关注栏目
+            if(name === "关注"){
+                // 如果是的话就需要加上token
+                config.headers = {
+                    Authorization: this.token
+                }
+            }
+
+            // 请求文章列表
+            this.$axios(
+                config
+            ).then(res => {
                 const {data, total} = res.data;
                 // 把data新数组和当前栏目的文章列表合并
                 this.categories[this.active].list = [...this.categories[this.active].list, ...data];
