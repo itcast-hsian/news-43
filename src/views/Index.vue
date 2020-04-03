@@ -122,8 +122,6 @@ export default {
                 v.pageIndex = 1; // 给每个栏目都添加了一个pageIndex属性
                 return v;
             })
-
-            console.log(this.categories);
         },
 
         // 请求获取菜单栏目数据
@@ -157,24 +155,37 @@ export default {
         // 请求文章列表
         getList(){
             // 当前栏目的id
-            const {id} = this.categories[this.active];
+            const {id, pageIndex} = this.categories[this.active];
+            //  如果数据已经加载完毕到了最后一页，就直接return；
+            if(this.finished) return;
 
             this.$axios({
                 url: "/post",
                 params: {
-                    pageIndex: 1, // 每个栏目页数是不一样的
+                    pageIndex, // 每个栏目页数是不一样的
                     pageSize: 5, //  请求数据的条数
                     category: id
                 }
             }).then(res => {
-                const {data} = res.data;
+                const {data, total} = res.data;
                 // 保存到data的文章列表中
-                this.list = data;
+                this.list = [...this.list, ...data];
+
+                // 告诉组件当前的请求加载完毕
+                this.loading = false;
+                
+                // 如果当前文章的条数等于total总条数，说明数据已经加载完毕
+                if(this.list.length === total){
+                    this.finished = true;
+                }
             })
         },
 
         // 请求下一页的数据
         onLoad() {
+            // 给当前栏目的页数加1
+            this.categories[this.active].pageIndex += 1;
+            // 请求文章列表
             this.getList();
         },
 
