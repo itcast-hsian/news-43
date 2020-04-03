@@ -31,7 +31,7 @@
                         finished-text="我也是有底线的"
                         @load="onLoad"
                     >
-
+                        
                         <!-- 假设list是后台返回的数组，里有10个元素 -->
                         <div v-for="(item, index) in categories[active].posts" :key="index">
                             <!-- 只有单张图片的 -->
@@ -49,6 +49,7 @@
                             v-if="item.type === 2"
                             :data="item"/>
                         </div>
+                    
                     </van-list>
                 </van-pull-refresh>
             </van-tab>
@@ -74,7 +75,7 @@ export default {
             // 记录当前tab的切换的索引
             active: 0,
             // 记录当前的栏目的id
-            categoryId: 999,
+            // categoryId: 999,
             // 假设这个文章数组是后台返回的数据
             // list: [],
             //loading: false, // 是否正在加载中
@@ -137,7 +138,7 @@ export default {
             params: {
                 pageIndex: 1,
                 pageSize: 5,
-                category: this.categoryId   
+                category: this.categories[this.active].id
             }
         }).then(res => {
             // 文章的数据
@@ -150,8 +151,7 @@ export default {
     },
     methods: {
         // 当栏目数据加载完成后
-        // 循环给栏目加上pageIndex, 文章列表
-        // 每个栏目都是自己的pageIndex，文章列表
+        // 循环给栏目加上pageIndex, 文章列表, 加载中的状态，是否加载完成
         handleCategories(){
             this.categories = this.categories.map(v => {
                 v.pageIndex = 1;
@@ -206,7 +206,6 @@ export default {
             if(this.categories[this.active].finished){
                 return;
             }
-
             const {pageIndex, id} = this.categories[this.active];
 
             // 加载下一页的数据
@@ -233,8 +232,6 @@ export default {
                     // 当前栏目的文章已经加载完毕
                     this.categories[this.active].finished = true;
                 }
-
-                
             })
         },
 
