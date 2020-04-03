@@ -78,6 +78,12 @@ export default {
 
             // 当栏目切换时候，需要重新的请求当前栏目的数据
             this.getList();
+            // 我们需要等待文章数据的渲染，渲染完成了之后才进行滚动
+            // 时间可以随便写
+            setTimeout(() => {
+                // 页面滚动到当前栏目下的scrollY值
+                window.scrollTo(0, this.categories[this.active].scrollY);
+            }, 0)
         }
     },
     components: {
@@ -118,6 +124,7 @@ export default {
                 v.list = []; // 给每个栏目都拥有自己的文章列表
                 v.loading = false;  // 给每个栏目都添加是否正在请求的状态
                 v.finished = false; // 给每个栏目都添加一个文章是否全部加载完毕的状态
+                v.scrollY = 0; // 给每个栏目添加一个滚动条的高度
                 return v;
             })
 
@@ -206,9 +213,13 @@ export default {
 
         // 监听tab滚动的事件
         handelScroll(data){
+            // 因为栏目不管是从本地获取或者请求接口也好，都是需要时间，
+            // 所以需要等this.categories有值时候才设置滚动条的高度s
+            if(this.categories.length === 0) return;
             // scrollTop是滚动条的距离
             const {scrollTop} = data;
-            console.log(scrollTop)
+            // 把滚动条的高度赋值给当前栏目下的scrollY
+            this.categories[this.active].scrollY = scrollTop;
         },
 
         onRefresh() {
