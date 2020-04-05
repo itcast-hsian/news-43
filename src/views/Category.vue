@@ -19,7 +19,8 @@
                 <!-- 循环渲染出is_top为0的栏目数组 -->
                 <span class="item"
                 v-for="(item, index) in arrDown" 
-                :key="index">
+                :key="index"
+                @click="handleAdd(item, index)">
                 {{item.name}}
                 </span>
             </div>
@@ -83,6 +84,15 @@ export default {
             item.is_top = 0;
             // 保存到下面的数组中
             this.arrDown.push(item);
+        },
+        // 点击添加栏目，也就是下面栏目的点击事件
+        handleAdd(item, index){
+            // 先从this.arrDown数组中删除这项
+            this.arrDown.splice(index, 1);
+            // 需要当前点击的栏目的is_top为1,
+            item.is_top = 1;
+            // 把当前这项追加到arrUp数组中
+            this.arrUp.push(item);
         }
     }
 };
