@@ -5,15 +5,18 @@
         <div class="content">
             <p class="desc">点击删除一下频道</p>
             <div class="list">
+                <!-- 循环渲染出is_top为1的栏目数组 -->
                 <span class="item" 
                 v-for="(item, index) in arrUp" 
                 :key="index"
-                :class="['关注','头条'].includes(item.name) ? `active` : `` ">
+                :class="['关注','头条'].includes(item.name) ? `active` : `` "
+                @click="handleDel(item, index)">
                 {{item.name}}
                 </span>
             </div>
             <p class="desc">点击添加一下频道</p>
             <div class="list">
+                <!-- 循环渲染出is_top为0的栏目数组 -->
                 <span class="item"
                 v-for="(item, index) in arrDown" 
                 :key="index">
@@ -55,8 +58,21 @@ export default {
         this.arrDown = this.categories.filter(v => {
             return v.is_top === 0;
         })
+    },
+    methods: {
+        // 点击删除栏目，也就是上面栏目的事件
+        handleDel(item, index){
+            // 如果是头条或者关注，就无效
+            if(['关注','头条'].includes(item.name)) return;
 
-        console.log(this.arrUp, this.arrDown)
+            // 把当前这项从arrUp数组中删除掉
+            this.arrUp.splice(index, 1);
+
+            // 需要当前点击的栏目的is_top为0,
+            item.is_top = 0;
+            // 保存到下面的数组中
+            this.arrDown.push(item);
+        }
     }
 };
 </script>
@@ -71,7 +87,7 @@ export default {
 
     .list{
         display: flex;
-        justify-content: space-between;
+        // justify-content: space-between;
         flex-wrap: wrap;
         .item{
             border: 1px #999 solid;
