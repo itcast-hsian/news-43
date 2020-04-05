@@ -24,9 +24,58 @@
                 <span class="record-item">美女美</span>
                 <span class="record-item">美女美</span>
                 <span class="record-item">美女</span>
+                 <span class="record-item">美女</span>
+                <span class="record-item">美女美女</span>
+                <span class="record-item">美女美</span>
+                <span class="record-item">美女美</span>
+                <span class="record-item">美女</span>
+                <span class="record-item">美女</span>
+                <span class="record-item">美女美女</span>
+                <span class="record-item">美女美</span>
+                <span class="record-item">美女美</span>
+                <span class="record-item">美女</span>
+                 <span class="record-item">美女</span>
+                <span class="record-item">美女美女</span>
+                <span class="record-item">美女美</span>
+                <span class="record-item">美女美</span>
+                <span class="record-item">美女</span><span class="record-item">美女</span>
+                <span class="record-item">美女美女</span>
+                <span class="record-item">美女美</span>
+                <span class="record-item">美女美</span>
+                <span class="record-item">美女</span>
+                 <span class="record-item">美女</span>
+                <span class="record-item">美女美女</span>
+                <span class="record-item">美女美</span>
+                <span class="record-item">美女美</span>
+                <span class="record-item">美女</span>
+                <span class="record-item">美女</span>
+                <span class="record-item">美女美女</span>
+                <span class="record-item">美女美</span>
+                <span class="record-item">美女美</span>
+                <span class="record-item">美女</span>
+                 <span class="record-item">美女</span>
+                <span class="record-item">美女美女</span>
+                <span class="record-item">美女美</span>
+                <span class="record-item">美女美</span>
+                <span class="record-item">美女</span>
             </div>
         </div>
 
+        <!-- 搜索结果的浮层 -->
+        <div class="result-layer">
+            <div class="result-item">
+                <p>搜索结果的浮层搜索结果的浮层搜索结果的浮层搜索结果的浮层搜索结果的浮层搜索结果的浮层</p>
+                <span class="iconfont iconjiantou1"></span>
+            </div>
+            <div class="result-item">
+                <p>搜索结果的浮层搜索结果的浮层</p>
+                <span class="iconfont iconjiantou1"></span>
+            </div>
+            <div class="result-item">
+                <p>搜索结果的浮层搜索结果的浮层</p>
+                <span class="iconfont iconjiantou1"></span>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -82,6 +131,39 @@ export default {};
             border: 1px #ccc solid;
             font-size: 14px;
             margin: 5/360*100vw 10/360*100vw;
+        }
+    }
+}
+
+.result-layer{
+    position: absolute;
+    // 在定位中如果同时设置top和bottom，那么这个元素高度取这两个定位的距离!
+    top: 58/360*100vw;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    overflow-y: auto;
+    padding: 20/360*100vw;
+    box-sizing: border-box;
+
+    .result-item{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10/360*100vw 0;
+        border-bottom:1px #eee solid;
+
+        p{
+            flex: 1;
+            margin-right: 10px;
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
+        }
+
+        span{
+            color: #999;
         }
     }
 }
