@@ -59,6 +59,17 @@ export default {
             return v.is_top === 0;
         })
     },
+    // 页面销毁时候触发的事件
+    destroyed(){
+        // 把栏目的数据保存到本地
+        this.categories = [
+            ...this.arrUp, 
+            ...this.arrDown, 
+            this.categories[this.categories.length - 1]
+        ]
+        const str = JSON.stringify(this.categories);
+        localStorage.setItem("categories", str);
+    },
     methods: {
         // 点击删除栏目，也就是上面栏目的事件
         handleDel(item, index){
