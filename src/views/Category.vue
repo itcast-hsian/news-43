@@ -5,27 +5,20 @@
         <div class="content">
             <p class="desc">点击删除一下频道</p>
             <div class="list">
-                <span class="item">推荐</span>
-                <span class="item">推荐</span>
-                <span class="item">推荐</span>
-                <span class="item">推荐</span>
-                <span class="item">推荐</span>
-                <span class="item">推荐</span>
-                <span class="item">推荐</span>
-                <span class="item">推荐</span>
-                <span class="item">推荐</span>
+                <span class="item" 
+                v-for="(item, index) in arrUp" 
+                :key="index"
+                :class="['关注','头条'].includes(item.name) ? `active` : `` ">
+                {{item.name}}
+                </span>
             </div>
             <p class="desc">点击添加一下频道</p>
             <div class="list">
-                <span class="item">推荐</span>
-                <span class="item">推荐</span>
-                <span class="item">推荐</span>
-                <span class="item">推荐</span>
-                <span class="item">推荐</span>
-                <span class="item">推荐</span>
-                <span class="item">推荐</span>
-                <span class="item">推荐</span>
-                <span class="item">推荐</span>
+                <span class="item"
+                v-for="(item, index) in arrDown" 
+                :key="index">
+                {{item.name}}
+                </span>
             </div>
         </div>
     </div>
@@ -36,10 +29,35 @@
 import NavigateBar from "@/components/NavigateBar"
 
 export default {
+    data(){
+        return {
+            // 本地获取的栏目数据
+            categories: [],
+            // 显示在上面的数组
+            arrUp: [],
+            // 显示在下面的数据
+            arrDown: []
+        }
+    },
     // 注册组件
     components: {
         NavigateBar
     },
+    // 组件加载完毕之后触发
+    mounted(){
+        // 获取本地的栏目数据
+        this.categories = JSON.parse(localStorage.getItem("categories"));
+        // 拆分两个数组
+        this.arrUp = this.categories.filter(v => {
+            return v.is_top === 1;
+        })
+        
+        this.arrDown = this.categories.filter(v => {
+            return v.is_top === 0;
+        })
+
+        console.log(this.arrUp, this.arrDown)
+    }
 };
 </script>
 
@@ -53,12 +71,18 @@ export default {
 
     .list{
         display: flex;
+        justify-content: space-between;
         flex-wrap: wrap;
         .item{
             border: 1px #999 solid;
             padding: 5px 10px;
             font-size: 16px;
             margin: 5/360*100vw 10/360*100vw;
+        }
+
+        .active{
+            border-color: #ddd;
+            color:#999;
         }
     }
 }
