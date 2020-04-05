@@ -125,6 +125,7 @@ export default {
                 v.loading = false;  // 给每个栏目都添加是否正在请求的状态
                 v.finished = false; // 给每个栏目都添加一个文章是否全部加载完毕的状态
                 v.scrollY = 0; // 给每个栏目添加一个滚动条的高度
+                v.isload = false; // 当前栏目是否正在请求，跟上面的loading不一样，loading是组件控制的，isload我们要自己控制
                 return v;
             })
 
@@ -163,7 +164,14 @@ export default {
         // 请求文章列表
         getList(){
             // 当前栏目的id,pageIndex,finished
-            const {id, pageIndex, finished, name} = this.categories[this.active];
+            const {id, pageIndex, finished, name, isload} = this.categories[this.active];
+            // 如果当前正在加载，直接返回
+            if(isload) return;
+            // 表示开始加载
+            this.categories[this.active].isload = true;
+            // 给当前栏目的页数加1
+            this.categories[this.active].pageIndex += 1;
+
             //  如果数据已经加载完毕到了最后一页，就直接return；
             if(finished) return;
             // 请求文章的配置
@@ -200,13 +208,14 @@ export default {
                 if(this.categories[this.active].list.length === total){
                     this.categories[this.active].finished = true;
                 }
+
+                // 加载完毕之后把isload的状态设置为false
+                this.categories[this.active].isload = false;
             })
         },
 
         // 请求下一页的数据
         onLoad() {
-            // 给当前栏目的页数加1
-            this.categories[this.active].pageIndex += 1;
             // 请求文章列表
             this.getList();
         },
