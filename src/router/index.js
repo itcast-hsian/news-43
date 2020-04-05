@@ -73,6 +73,11 @@ const routes = [
 			// 代表这个页面需要授权
 			authorization: true
 		}
+	},
+	{
+		// 栏目管理页
+		path: "/category",
+		component: () => import("@/views/Category")
 	}
 ]
 
