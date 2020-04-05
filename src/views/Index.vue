@@ -3,7 +3,7 @@
         <!-- 红色的头部 -->
         <div class="header">
             <span class="iconfont iconnew"></span>
-            <router-link to="#" class="search">
+            <router-link to="/search" class="search">
                 <span class="iconfont iconsearch"></span>
                 <i>搜索新闻</i>
             </router-link>
@@ -18,7 +18,7 @@
         <!-- swipeable: 是否开启手势滑动切换 -->
         <van-tabs v-model="active" sticky swipeable @scroll="handelScroll">
             <van-tab v-for="(item, index) in categories" 
-            v-if="item.is_top === 1 || item.name === `∨`" 
+            v-if="item.is_top === 1 || item.name === `∨`"
             :key="index" 
             :title="item.name">
 

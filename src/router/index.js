@@ -78,6 +78,11 @@ const routes = [
 		// 栏目管理页
 		path: "/category",
 		component: () => import("@/views/Category")
+	},
+	{
+		// 栏目管理页
+		path: "/search",
+		component: () => import("@/views/Search")
 	}
 ]
 
