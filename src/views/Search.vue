@@ -6,10 +6,11 @@
             <!-- 中间的搜索框 -->
             <div class="search-wrapper">
                 <span class="iconfont iconsearch"></span>
-                <input placeholder="请输入搜索关键字"/>
+                <!-- keyup.enter是键盘事件，keyup就是原生的onkeyup，enter就是确认键 -->
+                <input placeholder="请输入搜索关键字" v-model="value" @keyup.enter="handleSearch"/>
                 <!-- 点击搜索按钮和按回车都会触发搜索 -->
             </div>
-            <span>搜索</span>
+            <span @click="handleSearch">搜索</span>
         </div>
 
         <!-- 历史记录 -->
@@ -19,50 +20,14 @@
                 <span class="iconfont iconicon-test"></span>
             </div>
             <div class="record-list">
-                <span class="record-item">美女</span>
-                <span class="record-item">美女美女</span>
-                <span class="record-item">美女美</span>
-                <span class="record-item">美女美</span>
-                <span class="record-item">美女</span>
-                 <span class="record-item">美女</span>
-                <span class="record-item">美女美女</span>
-                <span class="record-item">美女美</span>
-                <span class="record-item">美女美</span>
-                <span class="record-item">美女</span>
-                <span class="record-item">美女</span>
-                <span class="record-item">美女美女</span>
-                <span class="record-item">美女美</span>
-                <span class="record-item">美女美</span>
-                <span class="record-item">美女</span>
-                 <span class="record-item">美女</span>
-                <span class="record-item">美女美女</span>
-                <span class="record-item">美女美</span>
-                <span class="record-item">美女美</span>
-                <span class="record-item">美女</span><span class="record-item">美女</span>
-                <span class="record-item">美女美女</span>
-                <span class="record-item">美女美</span>
-                <span class="record-item">美女美</span>
-                <span class="record-item">美女</span>
-                 <span class="record-item">美女</span>
-                <span class="record-item">美女美女</span>
-                <span class="record-item">美女美</span>
-                <span class="record-item">美女美</span>
-                <span class="record-item">美女</span>
-                <span class="record-item">美女</span>
-                <span class="record-item">美女美女</span>
-                <span class="record-item">美女美</span>
-                <span class="record-item">美女美</span>
-                <span class="record-item">美女</span>
-                 <span class="record-item">美女</span>
-                <span class="record-item">美女美女</span>
-                <span class="record-item">美女美</span>
-                <span class="record-item">美女美</span>
-                <span class="record-item">美女</span>
+                <span class="record-item" v-for="(item, index) in history" :key="index">
+                    {{item}}
+                </span>
             </div>
         </div>
 
         <!-- 搜索结果的浮层 -->
-        <div class="result-layer">
+        <div class="result-layer" v-if="false">
             <div class="result-item">
                 <p>搜索结果的浮层搜索结果的浮层搜索结果的浮层搜索结果的浮层搜索结果的浮层搜索结果的浮层</p>
                 <span class="iconfont iconjiantou1"></span>
@@ -80,7 +45,27 @@
 </template>
 
 <script>
-export default {};
+export default {
+    data(){
+        return {
+            // 输入框的值
+            value: "",
+            // 历史记录,先获取本地的搜索记录，如果没有就是等于一个空数组
+            history: JSON.parse(localStorage.getItem("history")) || []
+        }
+    },
+    methods: {
+        // 点击搜索或者按钮回车按钮触发的事件
+        handleSearch(){
+            // 把当前的搜索关键添加到数组中
+            this.history.unshift(this.value);
+            // 数组去重
+            this.history = [...new Set(this.history)]
+            // 把搜索关键字添加到本地
+            localStorage.setItem("history", JSON.stringify(this.history));
+        }
+    }
+};
 </script>
 
 <style scoped lang="less">
