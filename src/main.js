@@ -9,6 +9,9 @@ import Vant, {Toast} from 'vant';
 // 导入axios
 import axios from "axios";
 
+// 保存根实例对象的
+let app;
+
 // 绑定到原型，加上之后以后就可以在组件中通过this.$axios来调用请求方法
 Vue.prototype.$axios = axios;
 // 给axios添加基准路径，添加完了之后请求的url就会拼接这个地址
@@ -59,13 +62,22 @@ axios.interceptors.response.use(res => {
 		Toast.fail(message);
 	}
 
+	// 如果状态码是403，就表示token是错的或者没有传token
+	if(statusCode === 403){
+		// 提示
+		Toast.fail(message);
+
+		// 跳转到登录页
+		app.$router.push("/login");
+	}
+
 	return Promise.reject(error)
 })
 
 
 // 创建一个根实例
 // .$mount('#app') 相当于el配置，指定id为app的元素作为模板
-new Vue({
+app = new Vue({
 	// 路由对象
 	router,
 	// 加载第一个子组件，最底层的组件，（写法是固定的）
