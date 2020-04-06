@@ -43,6 +43,9 @@
                 <!-- 视频 -->
                 <PostItem3 :data="item" v-if="item.type === 2"/>
             </div>
+            <div class="empty" v-if="list.length === 0">
+                没有找到你想要的内容
+            </div>
         </div>
     </div>
 </template>
@@ -73,6 +76,18 @@ export default {
         PostItem2,
         PostItem3
     },
+    watch: {
+        // 监听输入框的输入
+        value(){
+            // 如果值的空的
+            if(this.value == ""){
+                // 清空文章列表
+                this.list = [];
+                // 且隐藏浮层
+                this.showLayer = false;
+            }
+        }
+    },
     methods: {
         // 点击搜索或者按钮回车按钮触发的事件
         handleSearch(){
@@ -95,6 +110,8 @@ export default {
         // 点击历史记录列表的选项, item是关键字字符串
         handleRecord(item){
             this.value = item;
+             // 调用接口开始搜索
+            this.getList();
         },
         // 调用接口发起搜索
         getList(){
@@ -199,5 +216,11 @@ export default {
             color: #999;
         }
     }
+}
+
+.empty{
+    text-align: center;
+    color: #999;
+    line-height: 2;
 }
 </style>
