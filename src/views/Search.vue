@@ -33,42 +33,59 @@
         </div>
 
         <!-- 搜索结果的浮层 -->
-        <div class="result-layer" v-if="false">
-            <div class="result-item">
-                <p>搜索结果的浮层搜索结果的浮层搜索结果的浮层搜索结果的浮层搜索结果的浮层搜索结果的浮层</p>
-                <span class="iconfont iconjiantou1"></span>
-            </div>
-            <div class="result-item">
-                <p>搜索结果的浮层搜索结果的浮层</p>
-                <span class="iconfont iconjiantou1"></span>
-            </div>
-            <div class="result-item">
-                <p>搜索结果的浮层搜索结果的浮层</p>
-                <span class="iconfont iconjiantou1"></span>
+        <div class="result-layer" v-if="showLayer">
+            <!-- 渲染文章列表的数据 -->
+            <div v-for="(item, index) in list" :key="index">
+                <!-- 只有单张图片的 -->
+                <PostItem1 :data="item" v-if="item.type === 1 && item.cover.length < 3"/> 
+                <!-- 大于等于3张图片 -->
+                <PostItem2 :data="item" v-if="item.type === 1 && item.cover.length >= 3"/> 
+                <!-- 视频 -->
+                <PostItem3 :data="item" v-if="item.type === 2"/>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+// 文章列表的组件,只有单张图片的
+import PostItem1 from "@/components/PostItem1"
+// 大于等于3张图片的组件
+import PostItem2 from "@/components/PostItem2"
+// 视频的列表组件
+import PostItem3 from "@/components/PostItem3"
+
 export default {
     data(){
         return {
             // 输入框的值
             value: "",
             // 历史记录,先获取本地的搜索记录，如果没有就是等于一个空数组
-            history: JSON.parse(localStorage.getItem("history")) || []
+            history: JSON.parse(localStorage.getItem("history")) || [],
+            // 文章列表
+            list: [],
+            // 是否展示浮层
+            showLayer: false
         }
+    },
+    components: {
+        PostItem1,
+        PostItem2,
+        PostItem3
     },
     methods: {
         // 点击搜索或者按钮回车按钮触发的事件
         handleSearch(){
+            // 如果关键字是空的，直接返回
+            if(this.value == "") return;
             // 把当前的搜索关键添加到数组中
             this.history.unshift(this.value);
             // 数组去重
             this.history = [...new Set(this.history)]
             // 把搜索关键字添加到本地
             localStorage.setItem("history", JSON.stringify(this.history));
+            // 调用接口开始搜索
+            this.getList();
         },
         // 清除本地的搜索记录
         handleClear(){
@@ -78,6 +95,22 @@ export default {
         // 点击历史记录列表的选项, item是关键字字符串
         handleRecord(item){
             this.value = item;
+        },
+        // 调用接口发起搜索
+        getList(){
+            this.$axios({
+                url: "/post_search",
+                params: {
+                    keyword: this.value
+                }
+            }).then(res => {
+                // 显示浮层
+                this.showLayer = true;
+                // data是文章的列表
+                const {data} = res.data;
+                // 保存到data中
+                this.list = data;
+            })
         }
     }
 };
@@ -144,7 +177,7 @@ export default {
     width: 100%;
     background: #fff;
     overflow-y: auto;
-    padding: 20/360*100vw;
+    padding: 20/360*100vw 0;
     box-sizing: border-box;
 
     .result-item{
