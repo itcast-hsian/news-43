@@ -17,7 +17,8 @@
         <div class="record">
             <div class="title">
                 <strong>历史记录</strong>
-                <span class="iconfont iconicon-test"></span>
+                <!-- 清空本地的搜索记录 -->
+                <span class="iconfont iconicon-test" @click="handleClear"></span>
             </div>
             <div class="record-list">
                 <span class="record-item" v-for="(item, index) in history" :key="index">
@@ -63,6 +64,11 @@ export default {
             this.history = [...new Set(this.history)]
             // 把搜索关键字添加到本地
             localStorage.setItem("history", JSON.stringify(this.history));
+        },
+        // 清除本地的搜索记录
+        handleClear(){
+            this.history = [];
+            localStorage.removeItem('history');
         }
     }
 };
