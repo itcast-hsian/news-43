@@ -7,21 +7,29 @@
                     <span class="iconfont iconjiantou2"></span>
                     <span class="iconfont iconnew"></span>
                 </div>
-                <!-- active表示红色的 -->
-                <span class="follow active">
-                    已关注
+                <!-- 如果关注是false，就加上active这个class，显示一个红色按钮 -->
+                <span class="follow" :class="post.has_follow ? '' : 'active'">
+                    {{ post.has_follow ? '已关注' : '关注' }}
                 </span>
             </div>
-            <h2 class="title">车主注意啦！9月下旬部分临时泊位进行清洁保养</h2>
-            <p class="author">火星时报    2019-10-10</p>
-            <div class="content">
-                为营造临时泊位“干静、整洁、平安、有序”面貌迎国庆，市交通部门拟在9月下旬对部分城市道路临时泊位进行清洁保养，请市民群众配合在清洁保养期间将车辆驶离泊位。第一阶段临时泊位清洁保养计划（涉及17条路段）：
-            </div>
+
+            <!-- 文章标题 -->
+            <h2 class="title">{{post.title}}</h2>
+
+            <!-- 文章的作者 -->
+            <p class="author">
+                {{post.user.nickname}}   {{moment(post.create_date).format(`YYYY-MM-DD hh:mm:ss`)}}
+            </p>
+
+            <!-- 文章的详情 -->
+            <div class="content" v-html="post.content"> </div>
+
             <!-- 按钮列表 -->
             <div class="actions">
                 <div class="actions-item">
                     <span class="iconfont icondianzan"></span> 
-                    <i>122</i>
+                    <!-- 点赞 -->
+                    <i>{{ Number(post.has_like) }}</i>
                 </div>
                 <div class="actions-item">
                     <span class="iconfont iconweixin"></span> 
@@ -36,11 +44,14 @@
             <div class="comment-input">发布评论</div>
             <div class="icons">
                 <span class="iconfont iconpinglun-"></span>
-                <i>102</i>
+                <!-- 评论的条数,如果大于100的话就显示99+ -->
+                <i>{{post.comment_length > 100 ? `99+` : post.comment_length}}</i>
             </div>
             <!-- 如果当前是收藏的状态显示一个红色的按钮 -->
             <div class="icons">
-                <span class="iconfont iconshoucang active"></span>
+                <!-- 如果当前是收藏的，就添加active这个class，显示一个红色的按钮 -->
+                <span class="iconfont iconshoucang" 
+                :class="post.has_star ? `active`: ''"></span>
             </div>
             <!-- 这个按钮是一个装饰用的，微信分享需要企业的资质 -->
             <div class="icons">
@@ -51,12 +62,36 @@
 </template>
 
 <script>
-export default {};
+// 时间转换工具库
+import moment from "moment";
+
+export default {
+    data(){
+        return {
+            // 文章的详情
+            post: {},
+            moment,
+        }
+    },
+    mounted(){
+        // 获取文章的id
+        const {id} = this.$route.params;
+        // 请求文章的详情
+        this.$axios({
+            url: "/post/" + id
+        }).then(res => {
+            // data是文章的详情
+            const {data} = res.data;
+            this.post = data;
+        })
+    }
+};
 </script>
 
 <style scoped lang="less">
 .main{
     padding: 20/360*100vw;
+    padding-bottom: 100/360*100vw;;
     border-bottom: 5px #eee solid;
 
     .header{
@@ -80,6 +115,12 @@ export default {};
             border-radius: 50px;
             font-size: 12px;
         }
+
+        .active{
+            background: red;
+            border-color: red;
+            color: #fff;
+        }
     }
 
     .title{
@@ -95,6 +136,11 @@ export default {};
     .content{
         line-height: 1.8;
         margin-top: 10/360*100vw;
+
+        // 不是本页面的标签或者类型，都可以通过/deep/来访问
+        /deep/ img{
+            max-width: 100%;
+        }
     }
 
     .actions{
@@ -161,6 +207,10 @@ export default {};
             font-size: 10px;
             line-height: 1;
             border-radius: 50px;
+        }
+
+        .active{
+            color: red;
         }
     }
 }
