@@ -4,7 +4,7 @@
             <!-- 头部 -->
             <div class="header">
                 <div class="left">
-                    <span class="iconfont iconjiantou2"></span>
+                    <span class="iconfont iconjiantou2" @click="$router.back()"></span>
                     <span class="iconfont iconnew"></span>
                 </div>
                 <!-- 如果关注是false，就加上active这个class，显示一个红色按钮 -->
@@ -69,7 +69,10 @@ export default {
     data(){
         return {
             // 文章的详情
-            post: {},
+            post: {
+                // 为什么要加这个默认值，因为模板需要访问post.user.nickname
+                user: {}
+            },
             moment,
         }
     },
