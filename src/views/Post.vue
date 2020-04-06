@@ -102,7 +102,10 @@ export default {
                     Authorization: token
                 }
             }).then(res => {
-                console.log(res)
+                // 关注成功之后修改关注状态
+                this.post.has_follow = true;
+
+                this.$toast.success("关注成功")
             })
         }
     }

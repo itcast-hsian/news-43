@@ -67,8 +67,15 @@ axios.interceptors.response.use(res => {
 		// 提示
 		Toast.fail(message);
 
-		// 跳转到登录页
-		app.$router.push("/login");
+		// 跳转到登录页, push方法的参数除了可以直接写一个字符串还可以写一个对象
+		// 对象里面的path属性表示路径，query表单问号的参数
+		// 比如这完整的路径其实 /login?return_url=/posts/8
+		app.$router.push({
+			path: "/login",
+			query: {
+				return_url: app.$route.path
+			}
+		});
 	}
 
 	return Promise.reject(error)

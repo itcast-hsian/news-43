@@ -80,8 +80,10 @@ export default {
                 // localStorage只能保存字符串，需要使用JSON.stringify来把对象转换成字符串
                 localStorage.setItem("userInfo", JSON.stringify(data));
 
-                // 先暂时登录成功跳转个人中心页
-                this.$router.push("/personal");
+                // 判断地址栏有没有return_url参数，
+                const {return_url} = this.$route.query;
+                // 有的话就跳转到这个路径，没有就跳转个人中心
+                this.$router.replace(return_url || "/personal");
             })
         },
     }
