@@ -2,12 +2,12 @@
     <div>
         <!-- 红色的头部 -->
         <div class="header">
-            <span class="iconfont iconjiantou2"></span>
+            <span class="iconfont iconjiantou2" @click="$router.back()"></span>
             <!-- 中间的搜索框 -->
             <div class="search-wrapper">
                 <span class="iconfont iconsearch"></span>
                 <!-- keyup.enter是键盘事件，keyup就是原生的onkeyup，enter就是确认键 -->
-                <input placeholder="请输入搜索关键字" v-model="value" @keyup.enter="handleSearch"/>
+                <input placeholder="请输入搜索关键字" autofocus v-model="value" @keyup.enter="handleSearch"/>
                 <!-- 点击搜索按钮和按回车都会触发搜索 -->
             </div>
             <span @click="handleSearch">搜索</span>

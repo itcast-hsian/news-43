@@ -1,13 +1,15 @@
 <template>
-    <div class="imgList">
-        <h4>{{data.title}}</h4>
-        <div class="images">
-            <img v-for="(item, index) in data.cover" 
-            :key="index"
-            :src="$axios.defaults.baseURL + item.url" />
+    <router-link :to="`/post/${data.id}`">
+        <div class="imgList">
+            <h4>{{data.title}}</h4>
+            <div class="images">
+                <img v-for="(item, index) in data.cover" 
+                :key="index"
+                :src="$axios.defaults.baseURL + item.url" />
+            </div>
+            <p>{{data.user.nickname}} {{data.comment_length}}跟帖</p>
         </div>
-        <p>{{data.user.nickname}} {{data.comment_length}}跟帖</p>
-    </div>
+    </router-link>
 </template>
 
 <script>
