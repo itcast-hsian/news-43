@@ -21,7 +21,12 @@
                 <span class="iconfont iconicon-test" @click="handleClear"></span>
             </div>
             <div class="record-list">
-                <span class="record-item" v-for="(item, index) in history" :key="index">
+                <!-- 历史记录的列表 -->
+                <span class="record-item" 
+                v-for="(item, index) in history" 
+                :key="index"
+                @click="handleRecord(item)"
+                >
                     {{item}}
                 </span>
             </div>
@@ -69,6 +74,10 @@ export default {
         handleClear(){
             this.history = [];
             localStorage.removeItem('history');
+        },
+        // 点击历史记录列表的选项, item是关键字字符串
+        handleRecord(item){
+            this.value = item;
         }
     }
 };
