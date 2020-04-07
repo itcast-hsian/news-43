@@ -16,7 +16,7 @@ let app;
 Vue.prototype.$axios = axios;
 // 给axios添加基准路径，添加完了之后请求的url就会拼接这个地址
 // axios.defaults.baseURL = "http://127.0.0.1:3000"
-axios.defaults.baseURL = "http://192.168.1.108:3000"
+axios.defaults.baseURL = "http://hmtoutiao-api.atlansic.com"
 
 // 注册vant插件 （vue.use都是用来注册插件）
 Vue.use(Vant);
