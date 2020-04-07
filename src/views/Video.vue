@@ -1,6 +1,7 @@
 <template>
     <div>
         <video 
+        v-if="post.content"
         :poster="$axios.defaults.baseURL + post.cover[0].url"
         :src="$axios.defaults.baseURL + post.content" 
         controls="controls" 
