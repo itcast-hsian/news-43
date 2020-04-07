@@ -50,7 +50,7 @@
                 <i>{{post.comment_length > 100 ? `99+` : post.comment_length}}</i>
             </div>
             <!-- 如果当前是收藏的状态显示一个红色的按钮 -->
-            <div class="icons">
+            <div class="icons" @click="handleStar">
                 <!-- 如果当前是收藏的，就添加active这个class，显示一个红色的按钮 -->
                 <span class="iconfont iconshoucang" 
                 :class="post.has_star ? `active`: ''"></span>
@@ -143,6 +143,20 @@ export default {
                     // 取消点赞就减1
                     this.post.like_length -= 1;
                 }
+                // 弹窗提示
+                this.$toast.success(res.data.message);
+            })
+        },
+        // 收藏
+        handleStar(){
+            this.$axios({
+                url: "/post_star/" + this.post.id,
+                headers: {
+                    Authorization: this.token
+                }
+            }).then(res => {
+                // 收藏状态取反
+                this.post.has_star = !this.post.has_star;
                 // 弹窗提示
                 this.$toast.success(res.data.message);
             })
