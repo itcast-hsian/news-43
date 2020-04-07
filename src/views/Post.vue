@@ -76,15 +76,26 @@ export default {
                 user: {}
             },
             moment,
+            token: ""
         }
     },
     mounted(){
         // 获取文章的id
         const {id} = this.$route.params;
-        // 请求文章的详情
-        this.$axios({
+        // 本地的token
+        const {token} = JSON.parse(localStorage.getItem("userInfo")) || {};
+        // 保存一份到data
+        this.token = token;
+        const config = {
             url: "/post/" + id
-        }).then(res => {
+        }
+        // 如果token有值给头信息加上token
+        if(token){
+            config.headers = { Authorization: token }
+        };
+
+        // 请求文章的详情
+        this.$axios(config).then(res => {
             // data是文章的详情
             const {data} = res.data;
             this.post = data;
@@ -93,13 +104,10 @@ export default {
     methods: {
         // 关注和取消关注
         handleFollow(){
-            // 本地的token
-            const {token} = JSON.parse(localStorage.getItem("userInfo")) || {};
-
             this.$axios({
                 url: '/user_follows/' + this.post.user.id,
                 headers: {
-                    Authorization: token
+                    Authorization: this.token
                 }
             }).then(res => {
                 // 关注成功之后修改关注状态
