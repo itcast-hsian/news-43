@@ -3,28 +3,40 @@
         <!-- 头部导航组件 -->
         <NavigateBar title="精彩跟帖"/>
 
-        <!-- 跟帖评论列表,评论的最外层, 第一级 -->
-        <div class="comment" v-for="(item, index) in list" :key="index">
-            <div class="comment-top">
-                <div class="user">
-                    <img :src="$axios.defaults.baseURL + item.user.head_img">
-                    <div class="user-info">
-                        <p>{{item.user.nickname}}</p>
-                        <!-- moment().fromNow 就是显示距离到当前的时间 -->
-                        <span>{{moment(item.create_date).fromNow()}}</span>
+        <!-- 分页组件 -->
+        <!-- v-model：是否正在加载中
+        finished：数据是否加载完成
+        @load：滚动到底部时候触发的事件 -->
+        <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+        :immediate-check="false"
+        >
+            <!-- 跟帖评论列表,评论的最外层, 第一级 -->
+            <div class="comment" v-for="(item, index) in list" :key="index">
+                <div class="comment-top">
+                    <div class="user">
+                        <img :src="$axios.defaults.baseURL + item.user.head_img">
+                        <div class="user-info">
+                            <p>{{item.user.nickname}}</p>
+                            <!-- moment().fromNow 就是显示距离到当前的时间 -->
+                            <span>{{moment(item.create_date).fromNow()}}</span>
+                        </div>
                     </div>
+                    <span class="reply">回复</span>
                 </div>
-                <span class="reply">回复</span>
-            </div>
 
-            <!-- 回复的列表，调用递归的组件, 第二级
-            item.parent有多少层数据，CommentFloor就自调用多少次 -->
-            <CommentFloor v-if="item.parent" :data="item.parent"/>
+                <!-- 回复的列表，调用递归的组件, 第二级
+                item.parent有多少层数据，CommentFloor就自调用多少次 -->
+                <CommentFloor v-if="item.parent" :data="item.parent"/>
 
-            <div class="content">
-                {{item.content}}
+                <div class="content">
+                    {{item.content}}
+                </div>
             </div>
-        </div>
+        </van-list>
     </div>
 </template>
 
@@ -45,7 +57,11 @@ export default {
             pid: "",
             // 评论的列表
             list: [],
-            moment
+            moment,
+            // 是否正在加载中
+            loading: false,
+            // 数据是否加载完毕
+            finished: false,
         }
     },
     components: {
@@ -71,6 +87,10 @@ export default {
                 // 保存到data的list
                 this.list = data;
             })
+        },
+        // 滚动到底部触发的事件
+        onLoad(){
+            console.log(123);
         }
     }
 };
@@ -78,7 +98,7 @@ export default {
 
 <style scoped lang="less">
 .comment{
-    padding: 15/360*100vw;
+    padding: 30/360*100vw 15/360*100vw;
     border-bottom: 1px #eee solid;
     font-size: 13px;
 }
