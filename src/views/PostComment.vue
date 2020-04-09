@@ -4,65 +4,24 @@
         <NavigateBar title="精彩跟帖"/>
 
         <!-- 跟帖评论列表 -->
-        <div class="comment">
+        <div class="comment" v-for="(item, index) in list" :key="index">
             <div class="comment-top">
                 <div class="user">
-                    <img src="https://img12.360buyimg.com/img/s100x100_jfs/t2770/142/2313361897/493911/1e5ea1db/575fd5f7N1cfc4411.jpg!cc_100x100.webp" alt="">
+                    <img :src="$axios.defaults.baseURL + item.user.head_img">
                     <div class="user-info">
-                        <p>火星网友</p>
-                        <span>2小时前</span>
+                        <p>{{item.user.nickname}}</p>
+                        <!-- moment().fromNow 就是显示距离到当前的时间 -->
+                        <span>{{moment(item.create_date).fromNow()}}</span>
                     </div>
                 </div>
                 <span class="reply">回复</span>
             </div>
 
-            <!-- 回复的列表 -->
-            <div class="comment-floor">
-                <div class="floor-top">
-                    <div class="user">
-                        <span>1</span>
-                        <em>火星网友</em>
-                        <span>2小时前</span>
-                    </div>
-                    <span class="reply">回复</span>
-                </div>
-                <div class="content">
-                    文章评论的回复
-                </div>
-
-                <!-- 第二级 -->
-                <div class="comment-floor">
-                    <div class="floor-top">
-                        <div class="user">
-                            <span>2</span>
-                            <em>火星网友</em>
-                            <span>2小时前</span>
-                        </div>
-                        <span class="reply">回复</span>
-                    </div>
-                    <div class="content">
-                        文章评论的回复
-                    </div>
-
-                    <!-- 第3级 -->
-                    <div class="comment-floor">
-                        <div class="floor-top">
-                            <div class="user">
-                                <span>3</span>
-                                <em>火星网友</em>
-                                <span>2小时前</span>
-                            </div>
-                            <span class="reply">回复</span>
-                        </div>
-                        <div class="content">
-                            文章评论的回复
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!-- 回复的列表，调用递归的组件 -->
+            <CommentFloor/>
 
             <div class="content">
-                文章说的很有道理！
+                {{item.content}}
             </div>
         </div>
     </div>
@@ -71,10 +30,47 @@
 <script>
 // 头部导航组件
 import NavigateBar from "@/components/NavigateBar"
+// 回复的评论楼层组件
+import CommentFloor from "@/components/CommentFloor"
+// 日期转换工具库
+import moment from "moment"
+// 转换国际语言，zh-CN就是中文（en 就是默认的英文）
+moment.locale('zh-CN');
 
 export default {
+    data(){
+        return {
+            // 文章id
+            pid: "",
+            // 评论的列表
+            list: [],
+            moment
+        }
+    },
     components: {
-        NavigateBar
+        NavigateBar,
+        CommentFloor
+    },
+    mounted(){
+        // 文章的id
+        const {id} = this.$route.params;
+        // 把id保存到data
+        this.pid = id;
+        // 请求评论列表数据
+        this.getList()
+    },
+    methods: {
+        // 请求评论列表数据
+        getList(){
+            this.$axios({
+                url: `/post_comment/${this.pid}`
+            }).then(res => {
+                // data是评论的列表数组
+                const {data} = res.data;
+                // 保存到data的list
+                this.list = data;
+            })
+        }
     }
 };
 </script>
@@ -88,6 +84,8 @@ export default {
 .comment-top{
     display: flex;
     justify-content: space-between;
+    margin-bottom: 10/360*100vw;
+
     .user{
         display: flex;
         align-items: center;
@@ -114,28 +112,5 @@ export default {
     margin-top: 10/360*100vw;
 }
 
-.comment-floor{
-    margin-top: 10/360*100vw;
-    border: 1px #ddd solid;
-    padding: 2px;
-    .floor-top{
-        display: flex;
-        justify-content: space-between;
-        padding: 5px;
 
-        span{
-            font-size: 12px;
-            color: #999;
-            margin-right:5px;
-        }
-        em{
-            margin-right: 5px;
-        }
-    }
-
-    .content{
-        padding: 5px;
-        padding-top: 0;
-    }
-}
 </style>
