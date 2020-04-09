@@ -62,6 +62,10 @@ export default {
             loading: false,
             // 数据是否加载完毕
             finished: false,
+            // 请求的页数
+            pageIndex: 1,
+            // 请求的条数
+            pageSize: 5
         }
     },
     components: {
@@ -80,17 +84,29 @@ export default {
         // 请求评论列表数据
         getList(){
             this.$axios({
-                url: `/post_comment/${this.pid}`
+                url: `/post_comment/${this.pid}`,
+                params: {
+                    pageIndex: this.pageIndex,
+                    pageSize: this.pageSize
+                }
             }).then(res => {
                 // data是评论的列表数组
                 const {data} = res.data;
                 // 保存到data的list
-                this.list = data;
+                this.list = [...this.list, ...data];
+                // 请求完毕后，页数需要加1
+                this.pageIndex += 1;
+                // 初始化分页相关的值, 告诉van-list组件请求完毕
+                this.loading = false;
+                // 数据已经全部完毕
+                if(data.length < this.pageSize){
+                    this.finished = true;
+                }
             })
         },
         // 滚动到底部触发的事件
         onLoad(){
-            console.log(123);
+            this.getList();
         }
     }
 };
