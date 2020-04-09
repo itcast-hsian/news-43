@@ -41,14 +41,23 @@
         <!-- 发布评论的底部 -->
         <div class="publish">
             <!-- 输入框，点击和没点击时候显示的效果是不一样的 -->
+            <!-- 如果输入框获得焦点的话：
+            1.需要显示出发布按钮，
+            2.需要去掉输入框的自适应高度，
+            3.需要添加active这个class -->
             <van-field
                 v-model="message"
                 :rows="rows"
-                autosize
+                :autosize="!isFocus"
                 type="textarea"
                 placeholder="说点什么..."
                 class="textarea"
+                :class="isFocus ? `ative` : ``"
+                @focus="handleFocus"
+                @blur="handleBlur"
                 />
+
+            <span class="submit" v-if="isFocus">发布</span>
         </div>
     </div>
 </template>
@@ -82,7 +91,9 @@ export default {
             // 发布评论的数据
             message: "",
             // 发布评论输入框的行数
-            rows: 1
+            rows: 1,
+            // 几率当前的输入框是否获得焦点
+            isFocus: false
         }
     },
     components: {
@@ -124,6 +135,15 @@ export default {
         // 滚动到底部触发的事件
         onLoad(){
             this.getList();
+        },
+        // 评论输入框获得焦点时候触发的事件
+        handleFocus(){
+            // 修改评论输入框的高度
+            this.isFocus = true;
+        },
+        // 评论输入框失去焦点时候触发
+        handleBlur(){
+            this.isFocus = false;
         }
     }
 };
@@ -177,11 +197,29 @@ export default {
     padding: 5/360*100vw 15/360*100vw;
     box-sizing: border-box;
     background: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
 
     .textarea{
         background: #eee;
         border-radius: 50px;
-        padding: 5px 20px;
+        padding: 5px 15px;
+    }
+
+    .ative{
+        height: 82px!important;
+        border-radius: 8px;
+    }
+
+    .submit{
+        margin-left:5px;
+        padding: 3px 10px;
+        color: #fff;
+        background: red;
+        border-radius: 50px;
+        font-size: 12px;
+        flex-shrink: 0;
     }
 }
 </style>
