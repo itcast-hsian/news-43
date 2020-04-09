@@ -2,27 +2,37 @@
     <div>
         <div class="comment-floor">
             <!-- 组件在这个位置自己调用自己 -->
-            <!-- <commentFloor/> -->
+            <commentFloor v-if="data.parent" :data="data.parent"/>
 
             <div class="floor-top">
                 <div class="user">
-                    <span>2</span>
-                    <em>火星网友</em>
-                    <span>2小时前</span>
+                    <!-- <span>2</span> -->
+                    <em>{{data.user.nickname}}</em>
+                    <span>{{moment(data.create_date).fromNow()}}</span>
                 </div>
                 <span class="reply">回复</span>
             </div>
             <div class="content">
-                文章评论的回复
+                {{data.content}}
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import moment from "moment";
+
 export default {
     // 声明当前的组件名，在当前组件里面，name的值可以用于调用组件自己
-    name: "commentFloor"
+    name: "commentFloor",
+
+    data(){
+        return {
+            moment
+        }
+    },
+    // 声明组件可以接收的数据
+    props: ["data"]
 }
 </script>
 

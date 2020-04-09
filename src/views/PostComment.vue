@@ -3,7 +3,7 @@
         <!-- 头部导航组件 -->
         <NavigateBar title="精彩跟帖"/>
 
-        <!-- 跟帖评论列表 -->
+        <!-- 跟帖评论列表,评论的最外层, 第一级 -->
         <div class="comment" v-for="(item, index) in list" :key="index">
             <div class="comment-top">
                 <div class="user">
@@ -17,8 +17,9 @@
                 <span class="reply">回复</span>
             </div>
 
-            <!-- 回复的列表，调用递归的组件 -->
-            <CommentFloor/>
+            <!-- 回复的列表，调用递归的组件, 第二级
+            item.parent有多少层数据，CommentFloor就自调用多少次 -->
+            <CommentFloor v-if="item.parent" :data="item.parent"/>
 
             <div class="content">
                 {{item.content}}
@@ -78,13 +79,13 @@ export default {
 <style scoped lang="less">
 .comment{
     padding: 15/360*100vw;
-    border-bottom: 1px #ddd solid;
+    border-bottom: 1px #eee solid;
     font-size: 13px;
 }
 .comment-top{
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10/360*100vw;
+    margin-bottom: 15/360*100vw;
 
     .user{
         display: flex;
@@ -111,6 +112,4 @@ export default {
 .content{
     margin-top: 10/360*100vw;
 }
-
-
 </style>
