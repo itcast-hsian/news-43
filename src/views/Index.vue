@@ -104,29 +104,8 @@ export default {
     // 和mounted不一样，mounded只会执行一次
     // activated(){},
     mounted(){
-        // 获取本地的token,如果没有值就等于一个空对象
-        const {token} = JSON.parse(localStorage.getItem('userInfo')) || {}
-        // 把token保存到data
-        this.token = token;
-        // 本地的栏目数据
-        const categories = JSON.parse(localStorage.getItem('categories'));
-
-        if(categories){
-            // 如果当前是登录的状态，但是栏目的第一项居然不是“关注”，需要重新请求
-            // 如果当前未登录，但是栏目的第一项居然叫“关注”，也需要重新请求
-            if( token && categories[0].name !== "关注" ||
-                !token && categories[0].name === "关注"){
-                // 调用请求栏目的数据,并且保存到本地
-                this.getCategories();
-            }else{
-                this.categories = categories;
-                // 调用方法给每个栏目添加新属性
-                this.handleCategories();
-            }
-        }else{
-            // 调用请求栏目的数据,并且保存到本地
-            this.getCategories();
-        }
+        // 把方法封装到reload这个函数里面
+        this.reload();
     },
     // 组件内的守卫，每次进入页面时候都会触发
     beforeRouteEnter(to, from, next){
@@ -135,13 +114,40 @@ export default {
             // vm就是this
             next(vm => {
                 vm.active = 0;
+                // 如果是从栏目管理回来的，避免栏目管理的数据有更新，所以重新的初始化页面
+                vm.reload();
             })
         }else{
             next();
         }
     },
-
     methods: {
+        // 初始化页面的方法
+        reload(){
+            // 获取本地的token,如果没有值就等于一个空对象
+            const {token} = JSON.parse(localStorage.getItem('userInfo')) || {}
+            // 把token保存到data
+            this.token = token;
+            // 本地的栏目数据
+            const categories = JSON.parse(localStorage.getItem('categories'));
+
+            if(categories){
+                // 如果当前是登录的状态，但是栏目的第一项居然不是“关注”，需要重新请求
+                // 如果当前未登录，但是栏目的第一项居然叫“关注”，也需要重新请求
+                if( token && categories[0].name !== "关注" ||
+                    !token && categories[0].name === "关注"){
+                    // 调用请求栏目的数据,并且保存到本地
+                    this.getCategories();
+                }else{
+                    this.categories = categories;
+                    // 调用方法给每个栏目添加新属性
+                    this.handleCategories();
+                }
+            }else{
+                // 调用请求栏目的数据,并且保存到本地
+                this.getCategories();
+            }
+        },
         // 循环处理栏目的数据
         handleCategories(){
             this.categories = this.categories.map(v => {

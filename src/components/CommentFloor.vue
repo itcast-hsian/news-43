@@ -2,11 +2,14 @@
     <div>
         <div class="comment-floor">
             <!-- 组件在这个位置自己调用自己 -->
-            <commentFloor v-if="data.parent" :data="data.parent" @reply="handleReply"/>
+            <commentFloor 
+            v-if="data.parent" 
+            :data="data.parent" 
+            @reply="handleReply"/>
 
             <div class="floor-top">
                 <div class="user">
-                    <!-- <span>2</span> -->
+                    <!-- <span>{{count}}</span> -->
                     <em>{{data.user.nickname}}</em>
                     <span>{{moment(data.create_date).fromNow()}}</span>
                 </div>
@@ -33,7 +36,7 @@ export default {
         }
     },
     // 声明组件可以接收的数据
-    props: ["data"],
+    props: ["data", "count"],
     methods: {
         // 组件内部的回复的事件
         handleReply(data){
