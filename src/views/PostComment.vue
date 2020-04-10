@@ -150,8 +150,12 @@ export default {
             // 失去焦点时候，不要立马就隐藏发布按钮，需要在按钮点击之后再隐藏
             setTimeout(() => {
                 this.isFocus = false;
+                
+                // 失去焦点时候如果输入框的值是空的，就把回复的人清空
+                if(this.message.trim() === ""){
+                    this.reply = {};
+                }
             }, 100)
-            
         },
         // 发布评论
         handleSubmit(){
