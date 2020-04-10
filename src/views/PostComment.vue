@@ -150,7 +150,7 @@ export default {
             // 失去焦点时候，不要立马就隐藏发布按钮，需要在按钮点击之后再隐藏
             setTimeout(() => {
                 this.isFocus = false;
-                
+
                 // 失去焦点时候如果输入框的值是空的，就把回复的人清空
                 if(this.message.trim() === ""){
                     this.reply = {};
@@ -166,6 +166,16 @@ export default {
 
             // 用户能够看到发布的按钮，说明当前肯定是一个登陆的状态
             const {token} = JSON.parse(localStorage.getItem('userInfo')) || {};
+            
+            // 评论接口的参数
+            const data = {
+                content: this.message
+            }
+            // 如果reply有值，说明当前是一条回复的评论
+            if(this.reply.id){
+                // parent_id 就是回复的评论的id
+                data.parent_id = this.reply.id;
+            }
 
             // 发布评论的请求
             this.$axios({
@@ -174,9 +184,7 @@ export default {
                 headers: {
                     Authorization: token
                 },
-                data:{
-                    content: this.message
-                }
+                data
             }).then(res => {
                 // 清空评论的数据
                 this.message = "";
@@ -186,6 +194,8 @@ export default {
                 this.list = []; // 必须要清空，如果不清空会合并之前的评论
                 this.pageIndex = 1;
                 this.getList();
+                // 清空回复的数据
+                this.reply = {};
             })
         },
         // 点击回复按钮触发的事件
