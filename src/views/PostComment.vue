@@ -175,6 +175,10 @@ export default {
                 this.message = "";
                 // 弹窗提示评论发布成功
                 this.$toast.success("发布成功");
+                // 重新请求列表数据
+                this.list = []; // 必须要清空，如果不清空会合并之前的评论
+                this.pageIndex = 1;
+                this.getList();
             })
         }
     }
