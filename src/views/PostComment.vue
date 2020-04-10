@@ -25,7 +25,7 @@
                             <span>{{moment(item.create_date).fromNow()}}</span>
                         </div>
                     </div>
-                    <span class="reply">回复</span>
+                    <span class="reply" @click="handleReply(item)">回复</span>
                 </div>
 
                 <!-- 回复的列表，调用递归的组件, 第二级
@@ -50,12 +50,13 @@
                 :rows="rows"
                 :autosize="!isFocus"
                 type="textarea"
-                placeholder="说点什么..."
+                :placeholder="reply.user ? `回复：@` + reply.user.nickname : `说点什么...`"
                 class="textarea"
                 :class="isFocus ? `ative` : ``"
                 @focus="handleFocus"
                 @blur="handleBlur"
                 @keyup.enter="handleSubmit"
+                ref="textarea"
                 />
 
             <span class="submit" v-if="isFocus" @click="handleSubmit">发布</span>
@@ -94,7 +95,9 @@ export default {
             // 发布评论输入框的行数
             rows: 1,
             // 几率当前的输入框是否获得焦点
-            isFocus: false
+            isFocus: false,
+            // 回复评论的对象
+            reply: {},
         }
     },
     components: {
@@ -180,6 +183,18 @@ export default {
                 this.pageIndex = 1;
                 this.getList();
             })
+        },
+        // 点击回复按钮触发的事件
+        handleReply(item){
+            // 因为点击时候失去焦点，已经触发了handleBlur事件
+            setTimeout(() => {
+                // 记录下来当前回复的评论信息,就是我们的评论在回复item
+                this.reply = item;
+                // 弹起输入框
+                this.isFocus = true;
+                // 输入框获得焦点
+                this.$refs.textarea.focus();
+            }, 200)
         }
     }
 };
