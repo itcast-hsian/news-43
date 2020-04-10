@@ -2,7 +2,7 @@
     <div>
         <div class="comment-floor">
             <!-- 组件在这个位置自己调用自己 -->
-            <commentFloor v-if="data.parent" :data="data.parent"/>
+            <commentFloor v-if="data.parent" :data="data.parent" @reply="handleReply"/>
 
             <div class="floor-top">
                 <div class="user">
@@ -10,7 +10,8 @@
                     <em>{{data.user.nickname}}</em>
                     <span>{{moment(data.create_date).fromNow()}}</span>
                 </div>
-                <span class="reply">回复</span>
+                <!-- 点击回复按钮时候触发父组件传递过来的回复函数 -->
+                <span class="reply" @click="handleReply(data)">回复</span>
             </div>
             <div class="content">
                 {{data.content}}
@@ -32,7 +33,14 @@ export default {
         }
     },
     // 声明组件可以接收的数据
-    props: ["data"]
+    props: ["data"],
+    methods: {
+        // 组件内部的回复的事件
+        handleReply(data){
+            // 触发父组件传递过来的reply函数
+            this.$emit("reply", data);
+        }
+    }
 }
 </script>
 
